@@ -3,13 +3,13 @@ import java.util.Scanner;
 public class StudentManagementSystem {
 static boolean menu = true;
 static String userSchoolName; 
-static boolean IDmakerLoop = false;
+static boolean IDmakerLoop = true;
 
     public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     // intro
     System.out.println("Welcome To ClassHelper, Your Application For Everything Student Management."
-            + "What Is The Name Of Your School?");
+            + " What Is The Name Of Your School?");
     String schoolName = input.nextLine();
     userSchoolName = schoolName;
     
@@ -24,22 +24,15 @@ static boolean IDmakerLoop = false;
     int menuInput = input.nextInt();
     
     switch (menuInput){
-        case 1:      
+        case 1:     
+            students.viewGrade();
             break;
         case 2:
             break;
         case 3:
-            while (IDmakerLoop){
             students.addStudent();
-            students.addStudentsToGrade();
-            
-            System.out.println("Do You Want To Add Another Student? (Y/N) ");
-            String IDmakerLoopAnswer = input.nextLine();
-            
-            if (IDmakerLoopAnswer.equalsIgnoreCase("Yes") || IDmakerLoopAnswer.equalsIgnoreCase("Y")){
-                IDmakerLoop = true;
-            }
-           }
+            students.addStudentToSchool();
+            students.changeStudent();
            break; 
         case 4:
             break;
