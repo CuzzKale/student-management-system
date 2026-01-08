@@ -14,7 +14,7 @@ private char honors;
 private char valedictorian;
 private double[] grades = new double[7]; 
 private String[] classes1 = new String[7]; 
-static boolean viewStudentLoop = false;
+static boolean viewStudentLoop = true;
 
 
 static int currentGrade; 
@@ -52,19 +52,8 @@ static Scanner input = new Scanner(System.in);
         int studentGrade = 0;
         
         // makes sure studentID cannot be the same as another student
-        int studentID = 0000000;
-        int randomNum = 1 + (int)(Math.random()*99999);
-        int i = 0;
-        while (i < IDS.size()){
-        if (randomNum != IDS.get(i)){
-            studentID = randomNum;
-            IDS.add(studentID);
-        }
-        else {
-            randomNum = 1 + (int)(Math.random()*999999);
-            i--; 
-     }
-    }
+        int studentID = 1000000;
+        
         // starts at 0;
         int studentOverallGrade = 0;
         
@@ -99,11 +88,17 @@ static Scanner input = new Scanner(System.in);
         int answerStudentGrade = input.nextInt();
         input.nextLine();
         // if student info empty fill with entered info
+        
+        
+        
+        
+
         for (int i = 0; i < school.size(); i++){
             if (school.get(i).name == null){
                 school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
-                school.get(i).email = answerFirstName.substring(0, 0) + answerMiddleName.substring(0, 0) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
-                school.get(i).grade = answerStudentGrade;         
+                school.get(i).email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
+                school.get(i).grade = answerStudentGrade;  
+                school.get(i).id += school.size();   
      }
     }
    }
@@ -154,11 +149,38 @@ static Scanner input = new Scanner(System.in);
                     }
                 }
                 break;   
-        } 
+        }
+        
+        System.out.println("Type 1: View Student\n"
+                + "Type 2: Change Student Information\n"
+                + "Type 3: View Report");
+        
+        int choiceStudent = input.nextInt();
+        
+       if (choiceStudent == 1){
+           while (viewStudentLoop){
+               viewStudent();
+        System.out.println("Do You Want To View Another Student (Y/N)");
+        String viewAnotherStudent = input.nextLine();
+         
+        if (viewAnotherStudent.equalsIgnoreCase("Yes") || viewAnotherStudent.equalsIgnoreCase("Y")){
+            viewStudentLoop = true;
+        }
+        else if (viewAnotherStudent.equalsIgnoreCase("No") || viewAnotherStudent.equalsIgnoreCase("N"))
+            viewStudentLoop = false;
+        }   
        }
+       else if (choiceStudent == 2){
+           // change student method 
+       }
+       else if (choiceStudent == 3){
+           // report method
+       }
+      }
             
     // view one students information 
     private static void viewStudent(){
+        input.nextLine();
         System.out.println("Type The First And Last Name Of The Student You Want To View");
         String viewStudentInput = input.nextLine();
         for (int i = 0; i < school.size(); i++){
@@ -167,10 +189,10 @@ static Scanner input = new Scanner(System.in);
                         + "Class            Grade\n"
                         + "-----            -----");
                 for (int p = 0; p < school.get(i).classes1.length; p++){
-                   System.out.println(school.get(i).classes1[p]);
-                   System.out.println("            " + school.get(i).grades[p]);
+                   System.out.print(school.get(i).classes1[p]);
+                   System.out.println("             " + school.get(i).grades[p]);
                 }
-              System.out.println("GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences + " Honors: " + school.get(i).honors + "valedictorian: " + school.get(i).valedictorian);          
+              System.out.println("GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);          
       }
      }  
     }
