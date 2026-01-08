@@ -15,15 +15,15 @@ private char valedictorian;
 private double[] grades = new double[7]; 
 private String[] classes1 = new String[7]; 
 static boolean viewStudentLoop = true;
-
-
-static int currentGrade; 
+static int currentGrade;
+static boolean addClassesLoop = true;
+static boolean mainClassLoop = true;
    
 static boolean addStudentLoop = true;
 static Scanner input = new Scanner(System.in);
 
    // all classes students could take
-   ArrayList<String> classes = new ArrayList<String>();
+   static ArrayList<String> classes = new ArrayList<String>();
 
    static ArrayList<Integer> IDS = new ArrayList<Integer>();
    
@@ -207,6 +207,83 @@ static Scanner input = new Scanner(System.in);
       }   
      }
     }
+    // any changes with classes that students can take
+    public static void addClasses(){
+        // required for both loops
+    addClassesLoop = true;
+    mainClassLoop = true;
+    
+    
+    // menu 
+    while (mainClassLoop){
+    System.out.println("Type 1: View Current Available Classes\n"
+            + "Type 2: Add Classes\n"
+            + "Type 3: Change Class Name\n"
+            + "Type 4: Delete Class\n"
+            + "Type 5: Quit Back To Main Menu");
+    
+    int addClassesAnswer = input.nextInt();
+    
+    switch (addClassesAnswer){
+        
+        // prints classes
+        case 1:
+        System.out.println("Current Classes: \n"
+            + Arrays.asList(students.classes));    
+            break;
+            
+            // loop - add class - press q - exit
+        case 2: 
+         input.nextLine();
+         while (addClassesLoop){
+    System.out.print("Type q to quit\n"
+            + "Type Class To Add: ");
+    String className = input.nextLine().trim();
+    if (className.equalsIgnoreCase("q") || className.equalsIgnoreCase("quit")){
+        addClassesLoop = false;
+        System.out.println("");
+    }
+    else{
+     classes.add(className);
+    }
+   }
+         break;
+         
+        case 3: 
+            for (int i = 0; i < classes.size(); i++){
+            System.out.println((i + 1) + ". " + classes.get(i));
+            }
+            System.out.println("Type The Number Of The Class Name You Want To Change");
+            int classChangeInput = input.nextInt();
+            input.nextLine();
+            System.out.print("Type The Change: ");
+            String classChangeAnswer = input.nextLine().trim();
+            classes.set((classChangeInput - 1), classChangeAnswer);
+           break;
+           
+        case 4: 
+            for (int i = 0; i < classes.size(); i++){
+            System.out.println((i + 1) + ". " + classes.get(i));
+            }
+           System.out.println("Type The Number Of The Class Name You Want To Delete"); 
+           int classDelete = input.nextInt();
+           classes.remove(classDelete - 1);
+            break;
+        
+        case 5:
+        mainClassLoop = false;
+        break;
+        
+        default:
+        System.out.println("Invalid Input... Try Again.");
+        break;
+    }
+   }
+  }
+    
+    
+    
+    
     public static void changeYear(){
         
  }   
