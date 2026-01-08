@@ -46,6 +46,7 @@ static Scanner input = new Scanner(System.in);
     }
     
     public static students addStudent(){ 
+        // empty
         String studentName = null;
         String studentEmail = null;
         int studentGrade = 0;
@@ -80,13 +81,13 @@ static Scanner input = new Scanner(System.in);
         // every value starts empty
         String[]studentClasses1 = {null,null,null,null,null,null,null};
         
-        
+        // returns object
         students student = new students(studentName, studentGrade, studentOverallGrade, studentID, studentEmail, studentAbsences, studentHonors, studentValedictorian, studentGrades, studentClasses1);
         return student;
     }
     
     public static void changeStudent(){
-    // gets students name & then makes that into a school email
+    // input will be put together for full name and email
         System.out.print("Student First Name: ");
         String answerFirstName = input.nextLine().trim();
         System.out.print("Student Middle Initial: ");
@@ -96,7 +97,8 @@ static Scanner input = new Scanner(System.in);
         
         System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
         int answerStudentGrade = input.nextInt();
-        
+        input.nextLine();
+        // if student info empty fill with entered info
         for (int i = 0; i < school.size(); i++){
             if (school.get(i).name == null){
                 school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
@@ -105,10 +107,12 @@ static Scanner input = new Scanner(System.in);
      }
     }
    }
-    
+    // adds student to system
     public static void addStudentToSchool(){
        students.school.add(addStudent());
     }
+    
+    // view every students information from grade 
     public static void viewGrade(){
     System.out.println("What Grade Would You Like To View(9, 10, 11, or 12)");
             int viewStudentGrade = input.nextInt();  
@@ -150,12 +154,27 @@ static Scanner input = new Scanner(System.in);
                     }
                 }
                 break;   
-            
         } 
        }
             
     
     private static void viewStudent(){
+        System.out.println("Type The First And Last Name Of The Student You Want To View");
+        String viewStudentInput = input.nextLine();
+        for (int i = 0; i < school.size(); i++){
+            if (school.get(i).name.equalsIgnoreCase(viewStudentInput)){
+                System.out.println(school.get(i).name + " | " + school.get(i).email + " | ID: " + school.get(i).id + "\n"
+                        + "Class            Grade\n"
+                        + "-----            -----");
+                for (int p = 0; p < school.get(i).classes1.length; p++){
+                   System.out.println(school.get(i).classes1[p]);
+                   System.out.println("            " + school.get(i).grades[p]);
+                }
+              System.out.println("GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences + " Honors: " + school.get(i).honors + "valedictorian: " + school.get(i).valedictorian);          
+                
+            }
+        }
+        
         
     }
     public static void removeStudent(){
