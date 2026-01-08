@@ -32,8 +32,12 @@ static boolean IDmakerLoop = true;
             students.viewGrade();
             break;
         case 2:
+            students.afterChange = true;
+            students.changeStudent();
             break;
         case 3:
+            students.initialChange = true;
+            students.afterChange = false;
             students.addStudent();
             students.addStudentToSchool();
             students.changeStudent();
