@@ -19,9 +19,11 @@ static boolean IDmakerLoop = true;
     System.out.println("Type 1: View Grades\n"
             + "Type 2: Change Student Info\n"
             + "Type 3: Add Student\n"
-            + "Type 4: View Student\n"
-            + "Type 5: Remove Student\n"
-            + "Type 6: Change Year");
+            + "Type 4: Remove Student\n"
+            + "Type 5: Add Classes\n"
+            + "Type 6: Change Year\n"
+            + "Type 7: Save\n"
+            + "Type 8: Exit");
     
     int menuInput = input.nextInt();
     
@@ -37,9 +39,10 @@ static boolean IDmakerLoop = true;
             students.changeStudent();
            break; 
         case 4:
+            students.removeStudent();
             break;
         case 5:
-            students.removeStudent();
+           students.addClasses();
             break;
         default:
             break;
