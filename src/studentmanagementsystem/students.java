@@ -14,7 +14,10 @@ private char honors;
 private char valedictorian;
 private double[] grades = new double[7]; 
 private String[] classes1 = new String[7]; 
+static boolean viewStudentLoop = false;
 
+
+static int currentGrade; 
    
 static boolean addStudentLoop = true;
 static Scanner input = new Scanner(System.in);
@@ -26,11 +29,7 @@ static Scanner input = new Scanner(System.in);
    
    
    // holds each grades students
-   static ArrayList<students> freshmen = new ArrayList<>();
-   static ArrayList<students> softmore = new ArrayList<>();
-   static ArrayList<students> junior = new ArrayList<>();
-   static ArrayList<students> senior = new ArrayList<>();
-   static ArrayList<ArrayList> school = new ArrayList<>();
+   static ArrayList<students> school = new ArrayList<>();
    
    // constructor - holds info for each student
     public students(String studentName, int studentGrade, double studentOverallGrade, int studentID, String studentEmail, int studentAbsences, char studentHonors, char studentValedictorian, double[] studentGrades, String[] studentClasses1){
@@ -46,28 +45,10 @@ static Scanner input = new Scanner(System.in);
         this.classes1 = studentClasses1;
     }
     
-    public static void viewGrade(){
-        
-    }
     public static students addStudent(){ 
-        // gets students name & then makes that into a school email
-        System.out.print("Student First Name: ");
-        String answerFirstName = input.nextLine().trim();
-        System.out.print("Student Middle Initial: ");
-        String answerMiddleName = input.nextLine().trim();
-        System.out.print("Student Last Name: ");
-        String answerLastName = input.nextLine().trim();
-        String studentName = answerFirstName + " " + answerMiddleName.toUpperCase() + " " + answerLastName;
-        String studentEmail = answerFirstName.substring(0, 0) + answerMiddleName.substring(0, 0) +
-       answerLastName + "@mail." + StudentManagementSystem.userSchoolName.trim();
-        
-        
-        
-        // gets students grade
-        System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
-        int answerStudentGrade = input.nextInt();
-        int studentGrade = answerStudentGrade;
-        
+        String studentName = null;
+        String studentEmail = null;
+        int studentGrade = 0;
         
         // makes sure studentID cannot be the same as another student
         int studentID = 0000000;
@@ -103,18 +84,79 @@ static Scanner input = new Scanner(System.in);
         students student = new students(studentName, studentGrade, studentOverallGrade, studentID, studentEmail, studentAbsences, studentHonors, studentValedictorian, studentGrades, studentClasses1);
         return student;
     }
-    public static void addStudentsToGrade(){
-        if (grade == 9){
-        students.freshmen.add(students.addStudent());
-        } else if(grade == 10){  
-        students.softmore.add(students.addStudent());
-        } else if (grade == 11){
-         students.junior.add(students.addStudent());   
-        } else if (grade == 12){
-        students.senior.add(students.addStudent());
-        } else{
-            System.out.println("Could Not Add Student To System. Wrong Grade Input...");
-      } 
+    
+    public static void changeStudent(){
+    // gets students name & then makes that into a school email
+        System.out.print("Student First Name: ");
+        String answerFirstName = input.nextLine().trim();
+        System.out.print("Student Middle Initial: ");
+        String answerMiddleName = input.nextLine().trim();
+        System.out.print("Student Last Name: ");
+        String answerLastName = input.nextLine().trim();
+        
+        System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
+        int answerStudentGrade = input.nextInt();
+        
+        for (int i = 0; i < school.size(); i++){
+            if (school.get(i).name == null){
+                school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
+                school.get(i).email = answerFirstName.substring(0, 0) + answerMiddleName.substring(0, 0) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
+                school.get(i).grade = answerStudentGrade;         
+     }
+    }
+   }
+    
+    public static void addStudentToSchool(){
+       students.school.add(addStudent());
+    }
+    public static void viewGrade(){
+    System.out.println("What Grade Would You Like To View(9, 10, 11, or 12)");
+            int viewStudentGrade = input.nextInt();  
+            
+        switch (viewStudentGrade){
+            case 9:
+                System.out.println("Freshmen: ");
+                for (int i = 0; i < school.size(); i++){
+                    if (school.get(i).grade == 9){
+                        System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
+                         + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                    }
+                }
+                break;
+            case 10: 
+            System.out.println("Softmore: ");
+                for (int i = 0; i < school.size(); i++){
+                    if (school.get(i).grade == 10){
+                        System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
+                         + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                    }
+                }
+                break;
+            case 11: 
+             System.out.println("Junior: ");
+                for (int i = 0; i < school.size(); i++){
+                    if (school.get(i).grade == 11){
+                        System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
+                         + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                    }
+                }
+                break;   
+            case 12:
+            System.out.println("Seniors: ");
+                for (int i = 0; i < school.size(); i++){
+                    if (school.get(i).grade == 12){
+                        System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
+                         + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                    }
+                }
+                break;   
+            
+        } 
+       }
+            
+    
+    private static void viewStudent(){
+        
     }
     public static void removeStudent(){
         
