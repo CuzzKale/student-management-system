@@ -176,7 +176,8 @@ static Scanner input = new Scanner(System.in);
     }
     // input allows for removal of student from database
     public static void removeStudent(){
-     System.out.println("Type The First And Last Name Of The Student You Want To Delete");   
+        input.nextLine();
+     System.out.println("Type The First, Middle Initial, and Last Name Of The Student You Want To Delete");   
        String deleteStudentInput = input.nextLine(); 
         for (int i = 0; i < school.size(); i++){
           if (school.get(i).name.equalsIgnoreCase(deleteStudentInput)){  
