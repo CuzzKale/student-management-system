@@ -157,7 +157,7 @@ static Scanner input = new Scanner(System.in);
         } 
        }
             
-    
+    // view one students information 
     private static void viewStudent(){
         System.out.println("Type The First And Last Name Of The Student You Want To View");
         String viewStudentInput = input.nextLine();
@@ -171,14 +171,18 @@ static Scanner input = new Scanner(System.in);
                    System.out.println("            " + school.get(i).grades[p]);
                 }
               System.out.println("GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences + " Honors: " + school.get(i).honors + "valedictorian: " + school.get(i).valedictorian);          
-                
-            }
-        }
-        
-        
+      }
+     }  
     }
+    // input allows for removal of student from database
     public static void removeStudent(){
-        
+     System.out.println("Type The First And Last Name Of The Student You Want To Delete");   
+       String deleteStudentInput = input.nextLine(); 
+        for (int i = 0; i < school.size(); i++){
+          if (school.get(i).name.equalsIgnoreCase(deleteStudentInput)){  
+              school.remove(i);
+      }   
+     }
     }
     public static void changeYear(){
         
