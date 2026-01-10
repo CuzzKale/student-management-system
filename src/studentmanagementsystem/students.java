@@ -314,6 +314,7 @@ static Scanner input = new Scanner(System.in);
         }   
        }
        else if (choiceStudent == 2){
+           students.afterChange = true;
            changeStudent();
        }
        else if (choiceStudent == 3){
@@ -377,6 +378,7 @@ static Scanner input = new Scanner(System.in);
             
             // loop - add class - press q - exit
         case 2: 
+            addClassesLoop = true;
          input.nextLine();
          while (addClassesLoop){
     System.out.print("Type q to quit\n"
@@ -425,7 +427,114 @@ static Scanner input = new Scanner(System.in);
     }
    }
   }
-    
+    // constantly updates students information based on user changes 
+    public static void studentUpdater(){
+        
+        // calculates each students GPA 
+        for (int i = 0; i < school.size(); i++){
+            int actualClassNum = 0;
+            for (int p = 0; p < school.get(i).grades.length; p++){
+                if (school.get(i).grades[p] != 0.0 && school.get(i).classes1 != null){
+                    school.get(i).overallGrade += school.get(i).grades[p];
+                   actualClassNum++;
+                }
+            }
+            school.get(i).overallGrade /= actualClassNum;  
+        }
+        
+        // calculates if they are in honors or not
+        for (int g = 0; g < school.size(); g++){
+            if (school.get(g).overallGrade >= 3.5){
+                school.get(g).honors = 'Y';
+            }
+            else if (school.get(g).overallGrade < 3.5){
+                school.get(g).honors = 'N';
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+       double highestFreshmenGrade = 0;
+       double highestSoftmoreGrade = 0;
+       double highestJuniorGrade = 0;
+       double highestSeniorGrade = 0;
+       // calculates the highest GPA from each grade
+        for (int w = 0; w < school.size(); w++){
+            // 9th grade
+            if (school.get(w).grade == 9){
+               if (school.get(w).overallGrade > highestFreshmenGrade){
+                   highestFreshmenGrade = school.get(w).overallGrade;
+             }
+            }
+            // 10th grade
+            if (school.get(w).grade == 10){
+                if (school.get(w).overallGrade > highestSoftmoreGrade){
+                highestSoftmoreGrade = school.get(w).overallGrade;
+            }
+           }
+            // 11th grade
+            if (school.get(w).grade == 11){
+                if (school.get(w).overallGrade > highestJuniorGrade){
+                    highestJuniorGrade = school.get(w).overallGrade;
+             }
+            }
+            // 12th grade
+            if (school.get(w).grade == 12){
+                if (school.get(w).overallGrade > highestSeniorGrade){
+                    highestSeniorGrade = school.get(w).overallGrade;
+          }
+         }
+        }
+        
+        
+        
+        
+        // if GPA is equal to highest in grade -> valedictorian 
+        for (int y = 0; y < school.size(); y++){
+            // 9th grade
+            if (school.get(y).grade == 9){
+                if (school.get(y).overallGrade == highestFreshmenGrade){
+                    school.get(y).valedictorian = 'Y';
+                }
+                else {
+                  school.get(y).valedictorian = 'N';  
+             }
+            }
+            // 10th grade
+            if (school.get(y).grade == 10){
+                if (school.get(y).overallGrade == highestSoftmoreGrade){
+                    school.get(y).valedictorian = 'Y';
+                }
+                else{
+                    school.get(y).valedictorian = 'N';
+             }
+            }
+            // 11th grade
+            if (school.get(y).grade == 11){
+                if (school.get(y).overallGrade == highestJuniorGrade){
+                    school.get(y).valedictorian = 'Y';
+                }
+                else{
+                    school.get(y).valedictorian = 'N';
+             }
+            }
+            // 12th grade
+            if (school.get(y).grade == 12){
+                if (school.get(y).overallGrade == highestSeniorGrade){
+                    school.get(y).valedictorian = 'Y';
+                }
+                else {
+                    school.get(y).valedictorian = 'N';
+             }
+            }  
+           }
+          }
     
     
     
