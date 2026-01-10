@@ -132,10 +132,9 @@ static Scanner input = new Scanner(System.in);
                        + "Type 3: Change Grade\n"
                        + "Type 4: Change ID\n"
                        + "Type 5: Change Absences\n"
-                       + "Type 6: Change honors\n"
-                       + "Type 7: Change Schedule\n"
-                       + "Type 8: Change Student Grades\n"
-                       + "Type 9: Quit Back To Main Menu");
+                       + "Type 6: Change Schedule\n"
+                       + "Type 7: Change Student Grades\n"
+                       + "Type 8: Quit Back To Main Menu");
                 
                int afterChangeLoopAnswer = input.nextInt();
                
@@ -185,27 +184,7 @@ static Scanner input = new Scanner(System.in);
                      school.get(index).absences = newAbsenses;
                      break;
                  
-                 case 6: 
-                     System.out.println("Current Honors: " + school.get(index).honors);
-                     System.out.print("New Honors(Y/N): ");
-                     String inputNewHonors = input.nextLine().trim();
-                     
-                     if (inputNewHonors.equalsIgnoreCase("Y")){
-                      school.get(index).honors = 'Y';   
-                     }
-                     else if (inputNewHonors.equalsIgnoreCase("N")){
-                         school.get(index).honors = 'N';
-                     }
-                     else{
-                         System.out.println("Invalid Input...");
-                     }
-                     
-                     
-                     
-                     
-                     
-                     break;
-                 case 7:
+                 case 6:
                     System.out.println("Available Classes: ");
                     for (int g = 0; g < classes.size(); g++){
                         System.out.println((g + 1) + ". " + classes.get(g));
@@ -222,7 +201,7 @@ static Scanner input = new Scanner(System.in);
                     school.get(index).classes1[classToChange - 1] = classes.get(newClass - 1);
                      break;
                  
-                 case 8:
+                 case 7:
                   System.out.println(school.get(index).name + " | " + school.get(index).email + " | ID: " + school.get(index).id + "\n"
                         + "Class            Grade\n"
                         + "-----            -----");
@@ -236,7 +215,7 @@ static Scanner input = new Scanner(System.in);
                 double updatedGrade = input.nextDouble();
                 school.get(index).grades[changeGrade - 1] = updatedGrade;
                  break;
-                 case 9:
+                 case 8:
                  afterChangeLoop = false;
                  afterChange = false;
                  break;
@@ -427,8 +406,8 @@ static Scanner input = new Scanner(System.in);
     }
    }
   }
+    // calculates each students GPA 
     private static void calculateGPA(){
-        // calculates each students GPA 
         for (int i = 0; i < school.size(); i++){
             double actualClassNum = 0.0;
             for (int p = 0; p < school.get(i).grades.length; p++){
@@ -441,8 +420,9 @@ static Scanner input = new Scanner(System.in);
             
         }
     }
+    // calculates if a student is in honors or not
     private static void calculateHonors(){
-        // calculates if they are in honors or not
+        
         for (int g = 0; g < school.size(); g++){
             if (school.get(g).overallGrade >= 3.5){
                 school.get(g).honors = 'Y';
@@ -453,6 +433,8 @@ static Scanner input = new Scanner(System.in);
         }
     }
     
+    
+    // finds the validictorian from each grade
     private static void calculateValidictorian(){
         double highestFreshmenGrade = 0;
        double highestSoftmoreGrade = 0;
