@@ -9,8 +9,9 @@ static boolean IDmakerLoop = true;
     public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     // intro
-    System.out.println("Welcome To ClassHelper, Your Application For Everything Student Management."
-            + " What Is The Name Of Your School?");
+    System.out.print("**Welcome To ClassHelper, Your Application For Everything Student Management**\n"
+            + "------------------------------------------------------------------------------\n"
+            + "What Is The Name Of Your School: ");
     String schoolName = input.nextLine();
     userSchoolName = schoolName.replaceAll("\\s","");
     
@@ -18,14 +19,16 @@ static boolean IDmakerLoop = true;
     while (menu){
         // updates students values based on previous input 
      students.studentUpdater();
-    System.out.println("Type 1: View Grades\n"
-            + "Type 2: Change Student Info\n"
-            + "Type 3: Add Student\n"
-            + "Type 4: Remove Student\n"
-            + "Type 5: Add Classes\n"
-            + "Type 6: Change Year\n"
-            + "Type 7: Save\n"
-            + "Type 8: Exit");
+    System.out.println(" ----------------------------\n"
+            + "|Type 1: View Grades         |\n"
+            + "|Type 2: Change Student Info |\n"
+            + "|Type 3: Add Student         |\n"
+            + "|Type 4: Remove Student      |\n"
+            + "|Type 5: Add Classes         |\n"
+            + "|Type 6: Change Year         |\n"
+            + "|Type 7: Save                |\n"
+            + "|Type 8: Exit                |\n"
+            + " ----------------------------");
     
     int menuInput = input.nextInt();
     

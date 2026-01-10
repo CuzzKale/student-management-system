@@ -128,14 +128,17 @@ static int year = 2026;
             
             
             while (afterChangeLoop){
-               System.out.println("Type 1: View student\n"
-                       + "Type 2: Change Name\n"
-                       + "Type 3: Change Grade\n"
-                       + "Type 4: Change ID\n"
-                       + "Type 5: Change Absences\n"
-                       + "Type 6: Change Schedule\n"
-                       + "Type 7: Change Student Grades\n"
-                       + "Type 8: Quit Back To Main Menu");
+               System.out.println(
+                         " ------------------------------\n"
+                       + "|Type 1: View student          |\n"
+                       + "|Type 2: Change Name           |\n"
+                       + "|Type 3: Change Grade          |\n"
+                       + "|Type 4: Change ID             |\n"
+                       + "|Type 5: Change Absences       |\n"
+                       + "|Type 6: Change Schedule       |\n"
+                       + "|Type 7: Change Student Grades |\n"
+                       + "|Type 8: Quit Back To Main Menu|\n"
+                       + " ------------------------------");
                 
                int afterChangeLoopAnswer = input.nextInt();
                
@@ -232,7 +235,7 @@ static int year = 2026;
     
     // view every students information from grade 
     public static void viewGrade(){
-    System.out.println("What Grade Would You Like To View(9, 10, 11, or 12)");
+    System.out.println("What Grade Would You Like To View?(9, 10, 11, or 12)");
             int viewStudentGrade = input.nextInt();  
             
         switch (viewStudentGrade){
@@ -242,6 +245,7 @@ static int year = 2026;
                     if (school.get(i).grade == 9){
                         System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
                          + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                        System.out.println("----------------------------------------------------------------------");
                     }
                 }
                 break;
@@ -251,6 +255,7 @@ static int year = 2026;
                     if (school.get(i).grade == 10){
                         System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
                          + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                        System.out.println("----------------------------------------------------------------------");
                     }
                 }
                 break;
@@ -260,6 +265,7 @@ static int year = 2026;
                     if (school.get(i).grade == 11){
                         System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
                          + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                        System.out.println("----------------------------------------------------------------------");
                     }
                 }
                 break;   
@@ -269,14 +275,18 @@ static int year = 2026;
                     if (school.get(i).grade == 12){
                         System.out.println((i + 1) + "." + " Name: " + school.get(i).name + " GPA: " + school.get(i).overallGrade + " Absences: " + school.get(i).absences
                          + " Honors: " + school.get(i).honors + " Valedictorian: " + school.get(i).valedictorian);
+                        System.out.println("----------------------------------------------------------------------");
                     }
                 }
                 break;   
         }
         
-        System.out.println("Type 1: View Student\n"
-                + "Type 2: Change Student Information\n"
-                + "Type 3: Exit Back To Main Menu");
+        System.out.println(
+                 " ----------------------------------\n"
+                +"|Type 1: View Student              |\n"
+                +"|Type 2: Change Student Information|\n"
+                +"|Type 3: Exit Back To Main Menu    |\n"
+                + " ----------------------------------");
         
         int choiceStudent = input.nextInt();
         
@@ -305,7 +315,7 @@ static int year = 2026;
     // view one students information 
     private static void viewStudent(){
         input.nextLine();
-        System.out.println("Type The First And Last Name Of The Student You Want To View");
+        System.out.println("Type The First, Middle Initial, And Last Name Of The Student You Want To View");
         String viewStudentInput = input.nextLine();
         for (int i = 0; i < school.size(); i++){
             if (school.get(i).name.equalsIgnoreCase(viewStudentInput)){
@@ -340,11 +350,13 @@ static int year = 2026;
     
     // menu 
     while (mainClassLoop){
-    System.out.println("Type 1: View Current Available Classes\n"
-            + "Type 2: Add Classes\n"
-            + "Type 3: Change Class Name\n"
-            + "Type 4: Delete Class\n"
-            + "Type 5: Quit Back To Main Menu");
+    System.out.println(" --------------------------------------\n"
+            + "|Type 1: View Current Available Classes|\n"
+            + "|Type 2: Add Classes                   |\n"
+            + "|Type 3: Change Class Name             |\n"
+            + "|Type 4: Delete Class                  |\n"
+            + "|Type 5: Quit Back To Main Menu        |\n"
+            + " --------------------------------------");
     
     int addClassesAnswer = input.nextInt();
     
@@ -567,5 +579,5 @@ static int year = 2026;
         else{
            System.out.println("Not Changing Year...");
         }
-      }  
+      }
      }
