@@ -427,21 +427,21 @@ static Scanner input = new Scanner(System.in);
     }
    }
   }
-    // constantly updates students information based on user changes 
-    public static void studentUpdater(){
-        
+    private static void calculateGPA(){
         // calculates each students GPA 
         for (int i = 0; i < school.size(); i++){
-            int actualClassNum = 0;
+            double actualClassNum = 0.0;
             for (int p = 0; p < school.get(i).grades.length; p++){
-                if (school.get(i).grades[p] != 0.0 && school.get(i).classes1 != null){
+                if ((school.get(i).grades[p] != 0.0) && (school.get(i).classes1[p] != null)){
                     school.get(i).overallGrade += school.get(i).grades[p];
-                   actualClassNum++;
-                }
+                    actualClassNum++;
+                    school.get(i).overallGrade /= actualClassNum;  
+                } 
             }
-            school.get(i).overallGrade /= actualClassNum;  
+            
         }
-        
+    }
+    private static void calculateHonors(){
         // calculates if they are in honors or not
         for (int g = 0; g < school.size(); g++){
             if (school.get(g).overallGrade >= 3.5){
@@ -451,16 +451,10 @@ static Scanner input = new Scanner(System.in);
                 school.get(g).honors = 'N';
             }
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-       double highestFreshmenGrade = 0;
+    }
+    
+    private static void calculateValidictorian(){
+        double highestFreshmenGrade = 0;
        double highestSoftmoreGrade = 0;
        double highestJuniorGrade = 0;
        double highestSeniorGrade = 0;
@@ -534,6 +528,16 @@ static Scanner input = new Scanner(System.in);
              }
             }  
            }
+    }
+    
+    
+    
+    
+    // constantly updates students information based on user changes 
+    public static void studentUpdater(){
+        calculateGPA();
+        calculateHonors();
+        calculateValidictorian();
           }
     
     
