@@ -50,7 +50,8 @@ static boolean IDmakerLoop = true;
         case 5:
            students.addClasses();
             break;
-        case 6:      
+        case 6:   
+            students.changeYear();
         break;
         case 7:
             break;

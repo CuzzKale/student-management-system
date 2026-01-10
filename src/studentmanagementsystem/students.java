@@ -23,6 +23,7 @@ static boolean afterChangeLoop = true;
 static boolean addStudentLoop = true;
 static int index;
 static Scanner input = new Scanner(System.in);
+static int year = 2026;
 
    // all classes students could take
    static ArrayList<String> classes = new ArrayList<String>();
@@ -523,15 +524,48 @@ static Scanner input = new Scanner(System.in);
           }
     
     
-    
+    // updates everything that needs to happen if it is the following year
     public static void changeYear(){
+        System.out.print("---WARNING---\n"
+        + "- THIS WILL REMOVE ALL SENIORS FROM THE SCHOOL\n"
+                + "- FRESHMEN, SOFTMORES, AND JUNIORS MOVED UP A GRADE"
+        + "- ALL STUDENTS GRADES AND CLASSES WILL BE RESET\n"
+                + "- CURRENT VERSION OF APPLICATION DOES NOT KEEP HISTORY OVER YEARS\n"
+                + "\n Current Year: " + year + "\n"
+                        + " Do You Want To Advance A Year? (Yes/No)");
+        String changeYearAnswer = input.nextLine().trim();
         
- }
-    
         
-        
-        
-        
-        
-    
-}
+        if (changeYearAnswer.equalsIgnoreCase("Yes") || changeYearAnswer.equalsIgnoreCase("Y")){
+            // removes seniors & moves other students up a grade
+        for (int i = school.size() - 1; i >= 0; i--){
+            if (school.get(i).grade == 12){
+                school.remove(i);
+         }
+            else if (school.get(i).grade == 11){
+                school.get(i).grade = 12;
+            }
+            else if (school.get(i).grade == 10){
+                school.get(i).grade = 11;
+            }
+            else if (school.get(i).grade == 9){
+                school.get(i).grade = 10;
+            }
+        }
+        // resets some information of students
+        for (int p = 0; p < school.size(); p++){
+            school.get(p).overallGrade = 0.0;
+            school.get(p).honors = 'N';
+            school.get(p).valedictorian = 'N';
+            school.get(p).absences = 0;
+            for (int g = 0; g < school.get(p).grades.length; g++){
+                school.get(p).grades[g] = 0.0; 
+                school.get(p).classes1[g] = null;
+         }
+        }
+       }
+        else{
+           System.out.println("Not Changing Year...");
+        }
+      }  
+     }
