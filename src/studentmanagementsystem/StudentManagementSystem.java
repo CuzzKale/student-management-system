@@ -16,6 +16,7 @@ static boolean IDmakerLoop = true;
     
     // main menu
     while (menu){
+     students.studentUpdater();
     System.out.println("Type 1: View Grades\n"
             + "Type 2: Change Student Info\n"
             + "Type 3: Add Student\n"
@@ -48,7 +49,7 @@ static boolean IDmakerLoop = true;
         case 5:
            students.addClasses();
             break;
-        case 6:
+        case 6:      
         break;
         case 7:
             break;
