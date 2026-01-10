@@ -296,7 +296,7 @@ static Scanner input = new Scanner(System.in);
         
         System.out.println("Type 1: View Student\n"
                 + "Type 2: Change Student Information\n"
-                + "Type 3: View Report");
+                + "Type 3: Exit Back To Main Menu");
         
         int choiceStudent = input.nextInt();
         
@@ -314,10 +314,10 @@ static Scanner input = new Scanner(System.in);
         }   
        }
        else if (choiceStudent == 2){
-           // change student method 
+           changeStudent();
        }
        else if (choiceStudent == 3){
-           // report method
+          viewStudentLoop = false; 
        }
       }
             
@@ -431,5 +431,12 @@ static Scanner input = new Scanner(System.in);
     
     public static void changeYear(){
         
- }   
+ }
+    
+        
+        
+        
+        
+        
+    
 }
