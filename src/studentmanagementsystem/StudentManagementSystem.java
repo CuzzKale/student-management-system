@@ -48,7 +48,16 @@ static boolean IDmakerLoop = true;
         case 5:
            students.addClasses();
             break;
+        case 6:
+        break;
+        case 7:
+            break;
+        case 8:
+            menu = false;
+            break;
+            
         default:
+        System.out.println("Invalid Input. Try Again...");
             break;
    }
   }
