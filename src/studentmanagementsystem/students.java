@@ -21,6 +21,7 @@ static boolean initialChange = false;
 static boolean afterChange = false; 
 static boolean afterChangeLoop = true;
 static boolean addStudentLoop = true;
+static boolean reportsLoop = true;
 static int index;
 static Scanner input = new Scanner(System.in);
 static int year = 2026;
@@ -130,7 +131,7 @@ static int year = 2026;
             while (afterChangeLoop){
                System.out.println(
                          " ------------------------------\n"
-                       + "|Type 1: View student          |\n"
+                       + "|Type 1: View Student          |\n"
                        + "|Type 2: Change Name           |\n"
                        + "|Type 3: Change Grade          |\n"
                        + "|Type 4: Change ID             |\n"
@@ -437,10 +438,10 @@ static int year = 2026;
     private static void calculateHonors(){
         
         for (int g = 0; g < school.size(); g++){
-            if (school.get(g).overallGrade >= 3.5){
+            if (school.get(g).overallGrade >= 87.5){
                 school.get(g).honors = 'Y';
             }
-            else if (school.get(g).overallGrade < 3.5){
+            else if (school.get(g).overallGrade < 87.5){
                 school.get(g).honors = 'N';
             }
         }
@@ -580,4 +581,65 @@ static int year = 2026;
            System.out.println("Not Changing Year...");
         }
       }
+    public static void reports(){
+        reportsLoop = true;
+        while (reportsLoop){
+            
+           System.out.println(
+                  " -----------------------\n"
+                + "|Type 1: School Report  |\n"
+                + "|Type 2: Freshmen Report|\n"
+                + "|Type 3: Softmore Report|\n"
+                + "|Type 4: Junior Report  |\n"
+                + "|Type 5: Senior Report  |\n"
+                + "|Type 6: Exit           |\n"
+                + " -----------------------");
+           
+           int reportAnswer = input.nextInt();
+           switch (reportAnswer){
+               
+               case 1:
+                   int totalStudents = 0;
+                   int averageGPA = 0;
+                   for (int i = 0; i < school.size(); i++){
+                       totalStudents++;
+                       averageGPA += school.get(i).overallGrade;
+                       if (school.get(i).valedictorian == 'Y'){
+                    System.out.println("Grade " + school.get(i).grade + " Valedictorian: " + school.get(i).name + "(GPA: " + school.get(i).overallGrade + ")");
+                       }
+                       if (school.get(i).honors == 'Y'){
+                           System.out.println("Honors: " + school.get(i).name);
+                       }
+                   }
+                System.out.println("Total Students: " + totalStudents);
+                System.out.println("Average GPA: " + (averageGPA / school.size()));
+                   break;
+               case 2:
+                   
+                   break;
+               case 3:
+                   break;
+               case 4:
+                   break;
+               case 5:
+                   break;
+               case 6:
+                   reportsLoop = false; 
+                   break;
+               
+               
+               
+               
+               
+               
+               
+           }
+            
+            
+            
+            
+            
+            
+      }
      }
+    }

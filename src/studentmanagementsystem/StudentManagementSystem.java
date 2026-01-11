@@ -26,7 +26,7 @@ static boolean IDmakerLoop = true;
             + "|Type 4: Remove Student      |\n"
             + "|Type 5: Add Classes         |\n"
             + "|Type 6: Change Year         |\n"
-            + "|Type 7: Save                |\n"
+            + "|Type 7: Get Reports         |\n"
             + "|Type 8: Exit                |\n"
             + " ----------------------------");
     
@@ -57,6 +57,7 @@ static boolean IDmakerLoop = true;
             students.changeYear();
         break;
         case 7:
+            students.reports();
             break;
         case 8:
             menu = false;
