@@ -81,7 +81,7 @@ static int year = 2026;
     
     public static void changeStudent(){
         if (initialChange){
-            input.nextLine();
+            
     // input will be put together for full name and email
         System.out.print("Student First Name: ");
         String answerFirstName = input.nextLine().trim();
@@ -90,9 +90,15 @@ static int year = 2026;
         System.out.print("Student Last Name: ");
         String answerLastName = input.nextLine().trim();
         
+        
+        
+        
+        
+        try{
         System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
-        int answerStudentGrade = input.nextInt();
-        input.nextLine();
+        
+        String answerStudentGradeString = input.nextLine().trim();
+        int answerStudentGrade = Integer.parseInt(answerStudentGradeString);
         // if student info empty fill with entered info
         
         
@@ -107,11 +113,23 @@ static int year = 2026;
                 school.get(i).id += school.size();   
      }
     }
+        }catch (NumberFormatException e){
+            System.out.println("Invalid Input. Try Again...");
+            }
         initialChange = false;
    }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         else if (afterChange){
             afterChangeLoop = false;
-            input.nextLine();
             System.out.println("Type The First, Middle Initial, And Last Name Of The Student");
             String afterChangeName = input.nextLine();
           
@@ -121,12 +139,6 @@ static int year = 2026;
                     students.afterChangeLoop = true;
                 }
             }
-            
-            
-            
-            
-            
-            
             
             while (afterChangeLoop){
                System.out.println(
@@ -140,16 +152,20 @@ static int year = 2026;
                        + "|Type 7: Change Student Grades |\n"
                        + "|Type 8: Quit Back To Main Menu|\n"
                        + " ------------------------------");
+                try{
+                    String stringAfterChangeLoopAnswer = input.nextLine().trim();
+               int afterChangeLoopAnswer = Integer.parseInt(stringAfterChangeLoopAnswer);
                 
-               int afterChangeLoopAnswer = input.nextInt();
                
              switch (afterChangeLoopAnswer){
+             
+                
+                 
                  
                  case 1:
                      viewStudent();
                  break;
                  case 2:
-                     input.nextLine();
                       System.out.print("Student First Name: ");
                       String answerFirstName = input.nextLine().trim();
                       System.out.print("Student Middle Initial: ");
@@ -161,7 +177,9 @@ static int year = 2026;
                      break;
                  case 3:
                      System.out.print("Change Grade(9,10,11,12): ");
-                     int gradeChange = input.nextInt();
+                     try{
+                     String stringGradeChange = input.nextLine().trim();
+                     int gradeChange = Integer.parseInt(stringGradeChange);
                      
                      if (gradeChange <= 12 && gradeChange >= 9){
                          school.get(index).grade = gradeChange;
@@ -169,11 +187,16 @@ static int year = 2026;
                      else{
                          System.out.println("Invalid Input...");
                      }
+                     }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
                      break;
-                 
+                    
                  case 4:
                      System.out.print("New ID(1000000-1999999): ");
-                     int newID = input.nextInt();
+                     try {
+                     String stringNewID = input.nextLine().trim();
+                     int newID = Integer.parseInt(stringNewID);
                      
                      if (newID >= 1000000 && newID <= 1999999){
                          school.get(index).id = newID;
@@ -181,14 +204,23 @@ static int year = 2026;
                      else {
                          System.out.println("Invalid Input...");
                      }
+                     }catch (NumberFormatException e){
+                     System.out.println("Invalid Input. Try Again...");
+                     }
                      break;
+                     
                  case 5:
                      System.out.println("Current Absenses: " + school.get(index).absences);
                      System.out.print("New Number Of Absenses: ");
-                     int newAbsenses = input.nextInt();
+                     try{
+                     String stringNewAbsenses = input.nextLine().trim();
+                     int newAbsenses = Integer.parseInt(stringNewAbsenses);
                      school.get(index).absences = newAbsenses;
+                     }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
                      break;
-                 
+                    
                  case 6:
                     System.out.println("Available Classes: ");
                     for (int g = 0; g < classes.size(); g++){
@@ -200,10 +232,15 @@ static int year = 2026;
                         
                     }
                     System.out.print("Number Of Class To Change: ");
-                    int classToChange = input.nextInt();
+                    try{
+                    String stringClassToChange = input.nextLine().trim();
+                    int classToChange = Integer.parseInt(stringClassToChange);
                     System.out.print("\nNew Class(Choose From Available Classes): ");
                     int newClass = input.nextInt();
                     school.get(index).classes1[classToChange - 1] = classes.get(newClass - 1);
+                    }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
                      break;
                  
                  case 7:
@@ -215,10 +252,16 @@ static int year = 2026;
                    System.out.println("             " + school.get(index).grades[p]);
                 }
                 System.out.print("Number Of Class To Change Grade In: ");
-                int changeGrade = input.nextInt();
+                try{
+                String stringChangeGrade = input.nextLine().trim();
+                int changeGrade = Integer.parseInt(stringChangeGrade);
                 System.out.print("New Grade: ");
-                double updatedGrade = input.nextDouble();
+                String stringUpdatedGrade = input.nextLine().trim();
+                double updatedGrade = Integer.parseInt(stringUpdatedGrade);
                 school.get(index).grades[changeGrade - 1] = updatedGrade;
+                }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
                  break;
                  case 8:
                  afterChangeLoop = false;
@@ -226,8 +269,11 @@ static int year = 2026;
                  break;
                  
              }
-            }
-        }
+            } catch (NumberFormatException e){
+            System.out.println("Invalid Input. Try Again...");
+       }
+      }
+     }
     }
     // adds student to system
     public static void addStudentToSchool(){
@@ -237,7 +283,10 @@ static int year = 2026;
     // view every students information from grade 
     public static void viewGrade(){
     System.out.println("What Grade Would You Like To View?(9, 10, 11, or 12)");
-            int viewStudentGrade = input.nextInt();  
+    
+    try {
+        String stringViewStudentGrade = input.nextLine().trim();
+            int viewStudentGrade = Integer.parseInt(stringViewStudentGrade);
             
         switch (viewStudentGrade){
             case 9:
@@ -281,6 +330,9 @@ static int year = 2026;
                 }
                 break;   
         }
+        }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
         
         System.out.println(
                  " ----------------------------------\n"
@@ -288,14 +340,15 @@ static int year = 2026;
                 +"|Type 2: Change Student Information|\n"
                 +"|Type 3: Exit Back To Main Menu    |\n"
                 + " ----------------------------------");
-        
-        int choiceStudent = input.nextInt();
+        try{
+        String stringChoiceStudent = input.nextLine().trim();
+        int choiceStudent = Integer.parseInt(stringChoiceStudent);
         
        if (choiceStudent == 1){
            while (viewStudentLoop){
                viewStudent();
         System.out.println("Do You Want To View Another Student (Y/N)");
-        String viewAnotherStudent = input.nextLine();
+        String viewAnotherStudent = input.nextLine().trim();
          
         if (viewAnotherStudent.equalsIgnoreCase("Yes") || viewAnotherStudent.equalsIgnoreCase("Y")){
             viewStudentLoop = true;
@@ -311,13 +364,14 @@ static int year = 2026;
        else if (choiceStudent == 3){
           viewStudentLoop = false; 
        }
-      }
-            
+      }catch (NumberFormatException e){
+                    System.out.println("Invalid Input. Try Again...");
+                    }
+    }   
     // view one students information 
     private static void viewStudent(){
-        input.nextLine();
         System.out.println("Type The First, Middle Initial, And Last Name Of The Student You Want To View");
-        String viewStudentInput = input.nextLine();
+        String viewStudentInput = input.nextLine().trim();
         for (int i = 0; i < school.size(); i++){
             if (school.get(i).name.equalsIgnoreCase(viewStudentInput)){
                 System.out.println(school.get(i).name + " | " + school.get(i).email + " | ID: " + school.get(i).id + "\n"
@@ -333,9 +387,8 @@ static int year = 2026;
     }
     // input allows for removal of student from database
     public static void removeStudent(){
-        input.nextLine();
      System.out.println("Type The First, Middle Initial, and Last Name Of The Student You Want To Delete");   
-       String deleteStudentInput = input.nextLine(); 
+       String deleteStudentInput = input.nextLine().trim(); 
         for (int i = 0; i < school.size(); i++){
           if (school.get(i).name.equalsIgnoreCase(deleteStudentInput)){  
               school.remove(i);
@@ -541,7 +594,7 @@ static int year = 2026;
     public static void changeYear(){
         System.out.print("---WARNING---\n"
         + "- THIS WILL REMOVE ALL SENIORS FROM THE SCHOOL\n"
-                + "- FRESHMEN, SOFTMORES, AND JUNIORS MOVED UP A GRADE"
+                + "- FRESHMEN, SOFTMORES, AND JUNIORS MOVED UP A GRADE\n"
         + "- ALL STUDENTS GRADES AND CLASSES WILL BE RESET\n"
                 + "- CURRENT VERSION OF APPLICATION DOES NOT KEEP HISTORY OVER YEARS\n"
                 + "\n Current Year: " + year + "\n"
@@ -581,6 +634,8 @@ static int year = 2026;
            System.out.println("Not Changing Year...");
         }
       }
+    
+    // displays a summary of a group of students
     public static void reports(){
         reportsLoop = true;
         while (reportsLoop){
@@ -594,10 +649,11 @@ static int year = 2026;
                 + "|Type 5: Senior Report  |\n"
                 + "|Type 6: Exit           |\n"
                 + " -----------------------");
-           
-           int reportAnswer = input.nextInt();
+           try{
+           String stringReportAnswer = input.nextLine().trim();
+           int reportAnswer = Integer.parseInt(stringReportAnswer);
            switch (reportAnswer){
-               
+               // whol school 
                case 1:
                    int totalStudents = 0;
                    int averageGPA = 0;
@@ -626,20 +682,10 @@ static int year = 2026;
                case 6:
                    reportsLoop = false; 
                    break;
-               
-               
-               
-               
-               
-               
-               
            }
-            
-            
-            
-            
-            
-            
+            }catch (NumberFormatException e){
+            System.out.println("Invalid Input. Try Again...");
+       }    
       }
      }
     }

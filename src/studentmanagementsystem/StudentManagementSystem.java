@@ -1,5 +1,6 @@
 package studentmanagementsystem;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 public class StudentManagementSystem {
 static boolean menu = true;
@@ -29,8 +30,12 @@ static boolean IDmakerLoop = true;
             + "|Type 7: Get Reports         |\n"
             + "|Type 8: Exit                |\n"
             + " ----------------------------");
+    try{
+       String stringMenuInput = input.nextLine().trim();
+        int menuInput = Integer.parseInt(stringMenuInput);
+       
+   
     
-    int menuInput = input.nextInt();
     
     switch (menuInput){
         case 1:     
@@ -67,6 +72,9 @@ static boolean IDmakerLoop = true;
         System.out.println("Invalid Input. Try Again...");
             break;
    }
+     }catch (NumberFormatException e){
+            System.out.println("Invalid Input. Try Again...");
+            }
   }
  }
 }
