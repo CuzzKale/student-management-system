@@ -734,14 +734,82 @@ static int year = 2026;
                 System.out.println("Total Students: " + totalStudents);
                 System.out.println("Average GPA: " + (averageGPA / school.size()));
                    break;
-               case 2:
                    
+               case 2:
+                   System.out.println("Freshmen Report: ");
+                   int freshmenStudents = 0;
+                   int averageFreshmenGPA = 0;
+                   for (int t = 0; t < school.size(); t++){
+                       if (school.get(t).grade == 9){
+                       freshmenStudents++;
+                       averageFreshmenGPA += school.get(t).overallGrade;
+                       if (school.get(t).valedictorian == 'Y'){
+                           System.out.println("Valedictorian: " + school.get(t).name + "(GPA: " + school.get(t).overallGrade + ")");
+                       }
+                       if (school.get(t).honors == 'Y'){
+                           System.out.println("Honor Student: " + school.get(t).name + "(GPA: " + school.get(t).overallGrade + ")");
+                       }
+                        }
+                         }
+                   System.out.println("Freshmen Students: " + freshmenStudents);
+                   System.out.println("Freshmen Average GPA: " + (averageFreshmenGPA/freshmenStudents));
                    break;
                case 3:
+                   System.out.println("Softmore Report: ");
+                   int softmoreStudents = 0;
+                   int averageSoftmoreGPA = 0;
+                   for (int u = 0; u < school.size(); u++){
+                       if (school.get(u).grade == 10){
+                       softmoreStudents++;
+                       averageSoftmoreGPA += school.get(u).overallGrade;
+                       if (school.get(u).valedictorian == 'Y'){
+                           System.out.println("Valedictorian: " + school.get(u).name + "(GPA: " + school.get(u).overallGrade + ")");
+                       }
+                       if (school.get(u).honors == 'Y'){
+                           System.out.println("Honor Student: " + school.get(u).name + "(GPA: " + school.get(u).overallGrade + ")");
+                       }
+                        }
+                         }
+                   System.out.println("Softmore Students: " + softmoreStudents);
+                   System.out.println("Softmores Average GPA: " + (averageSoftmoreGPA/softmoreStudents));
                    break;
                case 4:
+                   System.out.println("Juniors Report: ");
+                   int juniorStudents = 0;
+                   int averageJuniorGPA = 0;
+                   for (int j = 0; j < school.size(); j++){
+                       if (school.get(j).grade == 11){
+                       juniorStudents++;
+                       averageJuniorGPA += school.get(j).overallGrade;
+                       if (school.get(j).valedictorian == 'Y'){
+                           System.out.println("Valedictorian: " + school.get(j).name + "(GPA: " + school.get(j).overallGrade + ")");
+                       }
+                       if (school.get(j).honors == 'Y'){
+                           System.out.println("Honor Student: " + school.get(j).name + "(GPA: " + school.get(j).overallGrade + ")");
+                       }
+                        }
+                         }
+                   System.out.println("Junior Students: " + juniorStudents);
+                   System.out.println("Juniors Average GPA: " + (averageJuniorGPA/juniorStudents));
                    break;
                case 5:
+                   System.out.println("Seniors Report: ");
+                   int seniorStudents = 0;
+                   int averageSeniorGPA = 0;
+                   for (int s = 0; s < school.size(); s++){
+                       if (school.get(s).grade == 12){
+                       seniorStudents++;
+                       averageSeniorGPA += school.get(s).overallGrade;
+                       if (school.get(s).valedictorian == 'Y'){
+                           System.out.println("Valedictorian: " + school.get(s).name + "(GPA: " + school.get(s).overallGrade + ")");
+                       }
+                       if (school.get(s).honors == 'Y'){
+                           System.out.println("Honor Student: " + school.get(s).name + "(GPA: " + school.get(s).overallGrade + ")");
+                       }
+                        }
+                         }
+                   System.out.println("Senior Students: " + seniorStudents);
+                   System.out.println("Seniors Average GPA: " + (averageSeniorGPA/seniorStudents));
                    break;
                case 6:
                    reportsLoop = false; 
