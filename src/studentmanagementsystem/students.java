@@ -138,7 +138,7 @@ static int year = 2026;
             
             afterChangeLoop = false;
             System.out.println("Type The First, Middle Initial, And Last Name Of The Student");
-            String afterChangeName = input.nextLine();
+            String afterChangeName = input.nextLine().trim();
           
             for (int p = 0; p < school.size(); p++){
                 if (school.get(p).name.equalsIgnoreCase(afterChangeName)){
@@ -510,17 +510,28 @@ static int year = 2026;
   }
     // calculates each students GPA 
     private static void calculateGPA(){
+        // the whole school
         for (int i = 0; i < school.size(); i++){
-            double actualClassNum = 0.0;
-            for (int p = 0; p < school.get(i).grades.length; p++){
-                if ((school.get(i).grades[p] != 0.0) && (school.get(i).classes1[p] != null)){
-                    school.get(i).overallGrade += school.get(i).grades[p];
-                    actualClassNum++;
-                    school.get(i).overallGrade /= actualClassNum;  
-                } 
-            }
             
+            double isGPA0 = 0;
+            // makes sure GPA is not 0 because cant divide 0/0
+            for (int t = 0; t < school.get(i).grades.length; t++){
+               isGPA0 += school.get(i).grades[t];
+            }
+            // if 0 then 0
+            if (isGPA0 == 0.0){
+                school.get(i).overallGrade = 0.0;
+            }
+            // calculate gpa based on grades
+            else{
+            int classAmount = 0;
+            for (int p = 0; p < school.get(i).grades.length; p++){
+                    school.get(i).overallGrade += school.get(i).grades[p];
+                  classAmount++;                         
+               }
+            school.get(i).overallGrade /= classAmount;
         }
+       }   
     }
     // calculates if a student is in honors or not
     private static void calculateHonors(){
@@ -538,10 +549,10 @@ static int year = 2026;
     
     // finds the validictorian from each grade
     private static void calculateValidictorian(){
-        double highestFreshmenGrade = 0;
-       double highestSoftmoreGrade = 0;
-       double highestJuniorGrade = 0;
-       double highestSeniorGrade = 0;
+        double highestFreshmenGrade = 0.0;
+       double highestSoftmoreGrade = 0.0;
+       double highestJuniorGrade = 0.0;
+       double highestSeniorGrade = 0.0;
        // calculates the highest GPA from each grade
         for (int w = 0; w < school.size(); w++){
             // 9th grade
@@ -612,7 +623,7 @@ static int year = 2026;
              }
             }  
            }
-    }
+          }
     
     
     
