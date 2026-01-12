@@ -13,7 +13,7 @@ static boolean IDmakerLoop = true;
     System.out.print("**Welcome To ClassHelper, Your Application For Everything Student Management**\n"
             + "------------------------------------------------------------------------------\n"
             + "What Is The Name Of Your School: ");
-    String schoolName = input.nextLine();
+    String schoolName = input.nextLine().trim();
     userSchoolName = schoolName.replaceAll("\\s","");
     
     // main menu
