@@ -22,6 +22,8 @@ static boolean afterChange = false;
 static boolean afterChangeLoop = true;
 static boolean addStudentLoop = true;
 static boolean reportsLoop = true;
+static boolean changeClassesLoop = true; 
+static boolean changeStudentGrades = true;
 static int index;
 static Scanner input = new Scanner(System.in);
 static int year = 2026;
@@ -95,6 +97,7 @@ static int year = 2026;
         
         
         try{
+        try{
         System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
         
         String answerStudentGradeString = input.nextLine().trim();
@@ -111,9 +114,12 @@ static int year = 2026;
                 school.get(i).email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
                 school.get(i).grade = answerStudentGrade;  
                 school.get(i).id += school.size();   
+      }
      }
-    }
-        }catch (NumberFormatException e){
+    } catch (StringIndexOutOfBoundsException e){
+           System.out.println("Invalid Input. Try Again..."); 
+     }
+    }catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
             }
         initialChange = false;
@@ -129,6 +135,7 @@ static int year = 2026;
         
         
         else if (afterChange){
+            
             afterChangeLoop = false;
             System.out.println("Type The First, Middle Initial, And Last Name Of The Student");
             String afterChangeName = input.nextLine();
@@ -222,6 +229,8 @@ static int year = 2026;
                      break;
                     
                  case 6:
+                    changeClassesLoop = true; 
+                     while (changeClassesLoop){
                     System.out.println("Available Classes: ");
                     for (int g = 0; g < classes.size(); g++){
                         System.out.println((g + 1) + ". " + classes.get(g));
@@ -231,19 +240,35 @@ static int year = 2026;
                     System.out.println((t + 1) + ". " + school.get(index).classes1[t]);
                         
                     }
-                    System.out.print("Number Of Class To Change: ");
+                    System.out.print("Type q To Quit\n"
+                            + "Number Of Class To Change: ");
+                    try{
+                    try{
                     try{
                     String stringClassToChange = input.nextLine().trim();
+                    if (stringClassToChange.equalsIgnoreCase("Q") || stringClassToChange.equalsIgnoreCase("Quit")){
+                        changeClassesLoop = false;
+                        break;
+                    }
                     int classToChange = Integer.parseInt(stringClassToChange);
-                    System.out.print("\nNew Class(Choose From Available Classes): ");
+                    System.out.print("New Class(Choose From Available Classes): ");
                     int newClass = input.nextInt();
                     school.get(index).classes1[classToChange - 1] = classes.get(newClass - 1);
+                    }catch (ArrayIndexOutOfBoundsException e){
+                      System.out.println("Invalid Input. Try Again...");  
+                    }
                     }catch (NumberFormatException e){
                     System.out.println("Invalid Input. Try Again...");
                     }
+                     } catch (IndexOutOfBoundsException e){
+                    System.out.println("Invalid Input. Try Again...");     
+                     }
+                     }
                      break;
                  
                  case 7:
+                     changeStudentGrades = true;
+                     while (changeStudentGrades){
                   System.out.println(school.get(index).name + " | " + school.get(index).email + " | ID: " + school.get(index).id + "\n"
                         + "Class            Grade\n"
                         + "-----            -----");
@@ -251,17 +276,27 @@ static int year = 2026;
                    System.out.print((p + 1) + ". " + school.get(index).classes1[p]);
                    System.out.println("             " + school.get(index).grades[p]);
                 }
-                System.out.print("Number Of Class To Change Grade In: ");
+                System.out.print("Type q To Quit\n"
+                        + "Number Of Class To Change Grade In: ");
                 try{
+                    try{
                 String stringChangeGrade = input.nextLine().trim();
+                if (stringChangeGrade.equalsIgnoreCase("Q") || stringChangeGrade.equalsIgnoreCase("Quit")){
+                 changeClassesLoop = false;
+                        break;   
+                }
                 int changeGrade = Integer.parseInt(stringChangeGrade);
                 System.out.print("New Grade: ");
                 String stringUpdatedGrade = input.nextLine().trim();
                 double updatedGrade = Integer.parseInt(stringUpdatedGrade);
                 school.get(index).grades[changeGrade - 1] = updatedGrade;
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        System.out.println("Invalid Input. Try Again...");
+                    }
                 }catch (NumberFormatException e){
                     System.out.println("Invalid Input. Try Again...");
                     }
+                     }
                  break;
                  case 8:
                  afterChangeLoop = false;
@@ -653,7 +688,7 @@ static int year = 2026;
            String stringReportAnswer = input.nextLine().trim();
            int reportAnswer = Integer.parseInt(stringReportAnswer);
            switch (reportAnswer){
-               // whol school 
+               // whole school 
                case 1:
                    int totalStudents = 0;
                    int averageGPA = 0;
@@ -663,8 +698,11 @@ static int year = 2026;
                        if (school.get(i).valedictorian == 'Y'){
                     System.out.println("Grade " + school.get(i).grade + " Valedictorian: " + school.get(i).name + "(GPA: " + school.get(i).overallGrade + ")");
                        }
-                       if (school.get(i).honors == 'Y'){
-                           System.out.println("Honors: " + school.get(i).name);
+                   }
+                   System.out.println("Honors Students: ");
+                   for (int p = 0; p < school.size(); p++){
+                       if (school.get(p).honors == 'Y'){
+                           System.out.println(school.get(p).name + "(GPA: " + school.get(p).overallGrade + ")");
                        }
                    }
                 System.out.println("Total Students: " + totalStudents);
