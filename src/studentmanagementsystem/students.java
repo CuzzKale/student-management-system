@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 public class students {
 public String name;
-static public int grade;
+public int grade;
 private String gradeLetter;
 private double overallGrade;
 private int id;
@@ -95,7 +95,6 @@ static int year = 2026;
         
         
         
-        
         try{
         try{
         System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
@@ -103,12 +102,14 @@ static int year = 2026;
         String answerStudentGradeString = input.nextLine().trim();
         int answerStudentGrade = Integer.parseInt(answerStudentGradeString);
         // last added student now gets those values 
-       
-                school.getLast().name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
-                school.getLast().email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
-                school.getLast().grade = answerStudentGrade;  
-                school.getLast().id += school.size();   
-      
+       for (int i = 0; i < school.size(); i++){
+           if (school.get(i).name == null){
+                school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
+                school.get(i).email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
+                school.get(i).grade = answerStudentGrade;  
+                school.get(i).id += school.size();   
+           }
+        }
      
     } catch (StringIndexOutOfBoundsException e){
            System.out.println("Invalid Input. Try Again..."); 
@@ -164,6 +165,7 @@ static int year = 2026;
                  
                  
                  case 1:
+                     studentUpdater();
                      viewStudent();
                  break;
                  case 2:
@@ -375,6 +377,7 @@ static int year = 2026;
         int choiceStudent = Integer.parseInt(stringChoiceStudent);
         
        if (choiceStudent == 1){
+           studentUpdater();
            viewStudentLoop = true;
            while (viewStudentLoop){
                viewStudent();
@@ -389,6 +392,7 @@ static int year = 2026;
         }   
        }
        else if (choiceStudent == 2){
+           studentUpdater();
            students.afterChange = true;
            changeStudent();
        }
@@ -520,7 +524,7 @@ static int year = 2026;
     private static void calculateGPA(){
         // the whole school
         for (int i = 0; i < school.size(); i++){
-            
+            school.get(i).overallGrade = 0;
             double isGPA0 = 0;
             // makes sure GPA is not 0 because cant divide 0/0
             for (int t = 0; t < school.get(i).grades.length; t++){
@@ -534,12 +538,15 @@ static int year = 2026;
             else{
             int classAmount = 0;
             for (int p = 0; p < school.get(i).grades.length; p++){
+                if (school.get(i).grades[p] != 0.0 && school.get(i).classes1[p] != null){
                     school.get(i).overallGrade += school.get(i).grades[p];
                   classAmount++;                         
                }
-            school.get(i).overallGrade /= classAmount;
+            
         }
+            school.get(i).overallGrade /= classAmount;
        }   
+    }
     }
     // calculates if a student is in honors or not
     private static void calculateHonors(){
