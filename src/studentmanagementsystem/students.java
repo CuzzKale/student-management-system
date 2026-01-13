@@ -101,7 +101,7 @@ static int year = 2026;
         
         String answerStudentGradeString = input.nextLine().trim();
         int answerStudentGrade = Integer.parseInt(answerStudentGradeString);
-        // last added student now gets those values 
+        // student now gets those values 
        for (int i = 0; i < school.size(); i++){
            if (school.get(i).name == null){
                 school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
@@ -128,15 +128,16 @@ static int year = 2026;
         
         
         
-        
+        // same method just if usesr picks change student instead of add student 
         else if (afterChange){
             
             afterChangeLoop = false;
             System.out.println("Type The First, Middle Initial, And Last Name Of The Student");
             String afterChangeName = input.nextLine().trim();
-          
+          // matches users input to find the specific student 
             for (int p = 0; p < school.size(); p++){
                 if (school.get(p).name.equalsIgnoreCase(afterChangeName)){
+                    // index is saved as the empty student and used to change information of that student
                     index = p; 
                     students.afterChangeLoop = true;
                 }
@@ -370,7 +371,8 @@ static int year = 2026;
                  " ----------------------------------\n"
                 +"|Type 1: View Student              |\n"
                 +"|Type 2: Change Student Information|\n"
-                +"|Type 3: Exit Back To Main Menu    |\n"
+                +"|Type 3: View Grade Report         |\n"
+                +"|Type 4: Exit To Main Menu         |\n"
                 + " ----------------------------------");
         try{
         String stringChoiceStudent = input.nextLine().trim();
@@ -396,8 +398,13 @@ static int year = 2026;
            students.afterChange = true;
            changeStudent();
        }
+       // back to main menu
        else if (choiceStudent == 3){
+           reports();
           viewStudentLoop = false; 
+       }
+       else if (choiceStudent == 4){
+           viewStudentLoop = false; 
        }
       }catch (NumberFormatException e){
                     System.out.println("Invalid Input. Try Again...");
@@ -492,7 +499,7 @@ static int year = 2026;
             System.out.println("Invalid Input. Try Again...");
             }
            break;
-           
+           // delete a class based on user choice
         case 4: 
             for (int i = 0; i < classes.size(); i++){
             System.out.println((i + 1) + ". " + classes.get(i));
@@ -506,7 +513,7 @@ static int year = 2026;
             System.out.println("Invalid Input. Try Again...");
             }
             break;
-        
+        // exit add class 
         case 5:
         mainClassLoop = false;
         break;
@@ -524,6 +531,7 @@ static int year = 2026;
     private static void calculateGPA(){
         // the whole school
         for (int i = 0; i < school.size(); i++){
+            // *IMPORTANT* overallGrade is reset every time so running the method doesnt divide the existing overallGrade  - gets wrong num
             school.get(i).overallGrade = 0;
             double isGPA0 = 0;
             // makes sure GPA is not 0 because cant divide 0/0
@@ -696,7 +704,7 @@ static int year = 2026;
         }
       }
     
-    // displays a summary of a group of students
+    // displays a summary of a group of students - valedictorians, honors, average gpa, and total students
     public static void reports(){
         reportsLoop = true;
         while (reportsLoop){
@@ -734,7 +742,7 @@ static int year = 2026;
                 System.out.println("Total Students: " + totalStudents);
                 System.out.println("Average GPA: " + (averageGPA / school.size()));
                    break;
-                   
+                   // freshmen
                case 2:
                    System.out.println("Freshmen Report: ");
                    int freshmenStudents = 0;
@@ -754,6 +762,7 @@ static int year = 2026;
                    System.out.println("Freshmen Students: " + freshmenStudents);
                    System.out.println("Freshmen Average GPA: " + (averageFreshmenGPA/freshmenStudents));
                    break;
+                   // softmores
                case 3:
                    System.out.println("Softmore Report: ");
                    int softmoreStudents = 0;
@@ -773,6 +782,7 @@ static int year = 2026;
                    System.out.println("Softmore Students: " + softmoreStudents);
                    System.out.println("Softmores Average GPA: " + (averageSoftmoreGPA/softmoreStudents));
                    break;
+                   // juniors
                case 4:
                    System.out.println("Juniors Report: ");
                    int juniorStudents = 0;
@@ -792,6 +802,7 @@ static int year = 2026;
                    System.out.println("Junior Students: " + juniorStudents);
                    System.out.println("Juniors Average GPA: " + (averageJuniorGPA/juniorStudents));
                    break;
+                   // seniors
                case 5:
                    System.out.println("Seniors Report: ");
                    int seniorStudents = 0;
