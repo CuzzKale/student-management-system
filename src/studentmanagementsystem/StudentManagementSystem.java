@@ -65,6 +65,7 @@ static boolean IDmakerLoop = true;
             students.reports();
             break;
         case 8:
+            System.out.println("Thank You For Using ClassHelper!");
             menu = false;
             break;
             
