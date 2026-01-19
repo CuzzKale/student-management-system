@@ -1,13 +1,53 @@
 package studentmanagementsystem;
-
 import java.util.InputMismatchException;
+import java.sql.*;
+import org.h2.tools.Server;
 import java.util.Scanner;
 public class StudentManagementSystem {
 static boolean menu = true;
 static String userSchoolName; 
 static boolean IDmakerLoop = true;
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
+         
+        try{
+       
+       Server server = Server.createTcpServer("-tcpAllowOthers").start();
+       System.out.println("H2 server started at: " + server.getURL());
+        String url = "jdbc:h2:tcp://localhost/~/studentManagement";
+        String user = "sa";
+        String pass = "";
+        
+        try (Connection conn = DriverManager.getConnection(url, user, pass); Statement stmt = conn.createStatement()){
+           System.out.println("Connected!");
+           
+           stmt.execute("CREATE TABLE IF NOT EXISTS students ("
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "name VARCHAR(50),"
+                        + "email VARCHAR(50),"
+                        + "grade INT,"
+                        + "overallGrade DOUBLE,"
+                        + "honors VARCHAR(1),"
+                        + "valedictorian VARCHAR(1))"); 
+           
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes1 (classOne VARCHAR(50), classTwo VARCHAR(50), classThree VARCHAR(50), classFour VARCHAR(50), classFive VARCHAR(50),"
+                   + " classSix VARCHAR(50), classSeven VARCHAR(50))");
+           
+           stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
+                   + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0)");
+           
+           stmt.execute("CREATE TABLE IF NOT EXISTS otherInfo (schoolName VARCHAR(50))");
+           
+           
+        }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        
+        
+        
+        
+        
     Scanner input = new Scanner(System.in);
     // intro
     System.out.print("**Welcome To ClassHelper, Your Application For Everything Student Management**\n"
