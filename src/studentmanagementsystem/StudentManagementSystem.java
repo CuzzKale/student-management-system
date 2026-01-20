@@ -8,58 +8,48 @@ static boolean menu = true;
 static String userSchoolName; 
 static boolean IDmakerLoop = true;
 
-    public static void main(String[] args){
-         
-        try{
-       
-       Server server = Server.createTcpServer("-tcpAllowOthers").start();
-       System.out.println("H2 server started at: " + server.getURL());
-        String url = "jdbc:h2:tcp://localhost/~/studentManagement";
-        String user = "sa";
-        String pass = "";
+    public static void main(String[] args) throws SQLException{
+         Scanner input = new Scanner(System.in);
         
-        try (Connection conn = DriverManager.getConnection(url, user, pass); Statement stmt = conn.createStatement()){
-           System.out.println("Connected!");
+       Database.startConnection();
+
+       try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
            
            stmt.execute("CREATE TABLE IF NOT EXISTS students ("
                         + "id INT AUTO_INCREMENT PRIMARY KEY, "
                         + "name VARCHAR(50),"
                         + "email VARCHAR(50),"
                         + "grade INT,"
-                        + "overallGrade DOUBLE,"
+                        + "absences INT DEFAULT 0,"
+                        + "overallGrade DOUBLE DEFAULT 0.0,"
                         + "honors VARCHAR(1),"
                         + "valedictorian VARCHAR(1))"); 
            
-           stmt.execute("CREATE TABLE IF NOT EXISTS classes1 (classOne VARCHAR(50), classTwo VARCHAR(50), classThree VARCHAR(50), classFour VARCHAR(50), classFive VARCHAR(50),"
+           
+           
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes1 (id INT AUTO_INCREMENT PRIMARY KEY, classOne VARCHAR(50), classTwo VARCHAR(50), classThree VARCHAR(50), classFour VARCHAR(50), classFive VARCHAR(50),"
                    + " classSix VARCHAR(50), classSeven VARCHAR(50))");
            
-           stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
+           stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (id INT AUTO_INCREMENT PRIMARY KEY, gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
                    + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0)");
+          
            
-           stmt.execute("CREATE TABLE IF NOT EXISTS otherInfo (schoolName VARCHAR(50))");
-           
-           
-        }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        
-        
-        
-        
-        
-    Scanner input = new Scanner(System.in);
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, bslotOne VARCHAR(50), slotTwo VARCHAR(50), slotThree VARCHAR(50), slotFour VARCHAR(50),"
+                   + "slotFive VARCHAR(50), slotSix VARCHAR(50), slotSeven VARCHAR(50), slotEight VARCHAR(50), slotNine VARCHAR(50), slotTen VARCHAR(50))");
+
     // intro
     System.out.print("**Welcome To ClassHelper, Your Application For Everything Student Management**\n"
             + "------------------------------------------------------------------------------\n"
             + "What Is The Name Of Your School: ");
+    
     String schoolName = input.nextLine().trim();
     userSchoolName = schoolName.replaceAll("\\s","");
+      
     
     // main menu
     while (menu){
         // updates students values based on previous input 
-     students.studentUpdater();
+     
     System.out.println(" ----------------------------\n"
             + "|Type 1: View Grades         |\n"
             + "|Type 2: Change Student Info |\n"
@@ -82,15 +72,10 @@ static boolean IDmakerLoop = true;
             students.viewGrade();
             break;
         case 2:
-            students.afterChange = true;
             students.changeStudent();
             break;
         case 3:
-            students.initialChange = true;
-            students.afterChange = false;
             students.addStudent();
-            students.addStudentToSchool();
-            students.changeStudent();
            break; 
         case 4:
             students.removeStudent();
@@ -116,6 +101,7 @@ static boolean IDmakerLoop = true;
      }catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
             }
+   }
   }
  }
 }
