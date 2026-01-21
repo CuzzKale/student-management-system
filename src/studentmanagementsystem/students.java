@@ -134,7 +134,7 @@ static int year = 2026;
                      if (gradeChange <= 12 && gradeChange >= 9){
                          try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("UPDATE students SET grade = ? WHERE id = ?")){ 
                             ps.setInt(1, gradeChange);
-                            ps.setInt(2, checkId);
+                            ps.setInt(2, checkId);                        
                                  }
                       }    
                      
