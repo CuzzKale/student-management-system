@@ -462,12 +462,11 @@ static int year = 2026;
             // prints all classes with numbers
             try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery("SELECT * FROM classes");
-                    int i = 1;
+                    
                     while (rs.next()){
-                       
+                       int pickId = rs.getInt("id"); 
                        String theClass = rs.getString("class");
-                       System.out.println(i + ". " + theClass);
-                       i++;                          
+                       System.out.println(pickId + ". " + theClass);                          
              }
             } 
             
