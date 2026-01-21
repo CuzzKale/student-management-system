@@ -33,10 +33,11 @@ static boolean IDmakerLoop = true;
            stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (id INT AUTO_INCREMENT PRIMARY KEY, gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
                    + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0)");
           
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, class VARCHAR(50))");
            
-           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, bslotOne VARCHAR(50), slotTwo VARCHAR(50), slotThree VARCHAR(50), slotFour VARCHAR(50),"
-                   + "slotFive VARCHAR(50), slotSix VARCHAR(50), slotSeven VARCHAR(50), slotEight VARCHAR(50), slotNine VARCHAR(50), slotTen VARCHAR(50))");
-
+           
+           
+           
     // intro
     System.out.print("**Welcome To ClassHelper, Your Application For Everything Student Management**\n"
             + "------------------------------------------------------------------------------\n"
