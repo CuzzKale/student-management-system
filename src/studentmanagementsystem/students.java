@@ -1,8 +1,10 @@
 package studentmanagementsystem;
+import java.sql.*;
+import org.h2.tools.Server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-public class students {
+public class students{
 public String name;
 public int grade;
 private String gradeLetter;
@@ -12,8 +14,6 @@ public String email;
 private int absences;
 private char honors;
 private char valedictorian;
-private double[] grades = new double[7]; 
-private String[] classes1 = new String[7]; 
 static boolean viewStudentLoop = true;
 static boolean addClassesLoop = true;
 static boolean mainClassLoop = true;
@@ -28,62 +28,15 @@ static int index;
 static Scanner input = new Scanner(System.in);
 static int year = 2026;
 
-   // all classes students could take
-   static ArrayList<String> classes = new ArrayList<String>();
+    
 
-   static ArrayList<Integer> IDS = new ArrayList<Integer>();
-   
-   
-   // holds each grades students
-   static ArrayList<students> school = new ArrayList<>();
-   
-   // constructor - holds info for each student
-    public students(String studentName, int studentGrade, double studentOverallGrade, int studentID, String studentEmail, int studentAbsences, char studentHonors, char studentValedictorian, double[] studentGrades, String[] studentClasses1){
-        this.name = studentName;
-        this.grade = studentGrade;
-        this.overallGrade = studentOverallGrade;
-        this.id = studentID;
-        this.email = studentEmail;
-        this.absences = studentAbsences;
-        this.honors = studentHonors;
-        this.valedictorian = studentValedictorian;
-        this.grades = studentGrades; 
-        this.classes1 = studentClasses1;
-    }
-    
-    public static students addStudent(){ 
-        // empty
-        String studentName = null;
-        String studentEmail = null;
-        int studentGrade = 0;
-        
-        // makes sure studentID cannot be the same as another student
-        int studentID = 1000000;
-        
-        // starts at 0;
-        int studentOverallGrade = 0;
-        
-        // start with 0
-        int studentAbsences = 0;
-        
-        // starts without these awards
-        char studentHonors = 'N';
-        char studentValedictorian = 'N';
-        
-        // every value set at 0.0
-        double[]studentGrades = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-        
-        // every value starts empty
-        String[]studentClasses1 = {null,null,null,null,null,null,null};
-        
-        // returns object
-        students student = new students(studentName, studentGrade, studentOverallGrade, studentID, studentEmail, studentAbsences, studentHonors, studentValedictorian, studentGrades, studentClasses1);
-        return student;
-    }
-    
-    public static void changeStudent(){
-        if (initialChange){
-            
+
+    public static void addStudent() throws SQLException{
+      try (Connection conn = Database.continueConnection();
+    PreparedStatement ps = conn.prepareStatement("INSERT INTO students (name, grade, overallGrade, email, absences, honors, valedictorian) VALUES (?, ?, ?, ?, ?, ?, ?)")){
+     
+                
+                
     // input will be put together for full name and email
         System.out.print("Student First Name: ");
         String answerFirstName = input.nextLine().trim();
@@ -91,57 +44,48 @@ static int year = 2026;
         String answerMiddleName = input.nextLine().trim();
         System.out.print("Student Last Name: ");
         String answerLastName = input.nextLine().trim();
-        
-        
+        String fullName = answerFirstName + " " + answerMiddleName + " " + answerLastName;
+         String email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
         
         
         try{
         try{
         System.out.println("What Grade Is This Student In? (9,10,11,or 12)");
-        
         String answerStudentGradeString = input.nextLine().trim();
         int answerStudentGrade = Integer.parseInt(answerStudentGradeString);
-        // student now gets those values 
-       for (int i = 0; i < school.size(); i++){
-           if (school.get(i).name == null){
-                school.get(i).name = answerFirstName + " " + answerMiddleName + " " + answerLastName;
-                school.get(i).email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
-                school.get(i).grade = answerStudentGrade;  
-                school.get(i).id += school.size();   
-           }
-        }
-     
-    } catch (StringIndexOutOfBoundsException e){
+
+    // database student gains those values
+        ps.setString(1, fullName);
+        ps.setInt(2, answerStudentGrade);
+        ps.setDouble(3, 0.0);
+        ps.setString(4, email);
+        ps.setInt(5, 0);
+        ps.setString(6, "N");
+        ps.setString(7, "N");
+        
+        ps.executeUpdate();
+        
+        
+        
+        } catch (StringIndexOutOfBoundsException e){
            System.out.println("Invalid Input. Try Again..."); 
      }
     }catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
-            }
-        initialChange = false;
-   }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        // same method just if usesr picks change student instead of add student 
-        else if (afterChange){
-            
-            afterChangeLoop = false;
-            System.out.println("Type The First, Middle Initial, And Last Name Of The Student");
-            String afterChangeName = input.nextLine().trim();
-          // matches users input to find the specific student 
-            for (int p = 0; p < school.size(); p++){
-                if (school.get(p).name.equalsIgnoreCase(afterChangeName)){
-                    // index is saved as the empty student and used to change information of that student
-                    index = p; 
-                    students.afterChangeLoop = true;
-                }
-            }
+ }
+        } catch (SQLException e){
+                e.printStackTrace();
+  }
+ }  
+
+    
+    public static void changeStudent() throws SQLException{
+       
+    afterChangeLoop = true;
+    try{
+            System.out.print("Student id: ");
+            String stringCheckId = input.nextLine().trim();
+            int checkId = Integer.parseInt(stringCheckId);
             
             while (afterChangeLoop){
                System.out.println(
@@ -149,11 +93,10 @@ static int year = 2026;
                        + "|Type 1: View Student          |\n"
                        + "|Type 2: Change Name           |\n"
                        + "|Type 3: Change Grade          |\n"
-                       + "|Type 4: Change ID             |\n"
-                       + "|Type 5: Change Absences       |\n"
-                       + "|Type 6: Change Schedule       |\n"
-                       + "|Type 7: Change Student Grades |\n"
-                       + "|Type 8: Quit Back To Main Menu|\n"
+                       + "|Type 4: Change Absences       |\n"
+                       + "|Type 5: Change Schedule       |\n"
+                       + "|Type 6: Change Student Grades |\n"
+                       + "|Type 7: Quit Back To Main Menu|\n"
                        + " ------------------------------");
                 try{
                     String stringAfterChangeLoopAnswer = input.nextLine().trim();
@@ -161,23 +104,26 @@ static int year = 2026;
                 
                
              switch (afterChangeLoopAnswer){
-             
-                
-                 
                  
                  case 1:
                      studentUpdater();
                      viewStudent();
                  break;
                  case 2:
-                      System.out.print("Student First Name: ");
+                     System.out.print("Student First Name: ");
                       String answerFirstName = input.nextLine().trim();
                       System.out.print("Student Middle Initial: ");
                       String answerMiddleName = input.nextLine().trim();
                       System.out.print("Student Last Name: ");
                       String answerLastName = input.nextLine().trim();
-                     school.get(index).name = answerFirstName + " " + answerMiddleName + " " + answerLastName; 
-                     school.get(index).email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
+                      String fullName = answerFirstName + " " + answerMiddleName + " " + answerLastName;
+                      String email = answerFirstName.substring(0, 1) + answerMiddleName.substring(0, 1) + answerLastName +  "@mail." + StudentManagementSystem.userSchoolName + ".edu";
+                     try(Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("UPDATE students SET name = ? AND email = ? WHERE id = ?")){
+                         ps.setInt(3, checkId);
+                         ps.setString(1,  fullName);
+                         ps.setString(2, email);
+                         ps.executeUpdate();
+                     }
                      break;
                  case 3:
                      System.out.print("Change Grade(9,10,11,12): ");
@@ -186,8 +132,12 @@ static int year = 2026;
                      int gradeChange = Integer.parseInt(stringGradeChange);
                      
                      if (gradeChange <= 12 && gradeChange >= 9){
-                         school.get(index).grade = gradeChange;
-                     }
+                         try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("UPDATE students SET grade = ? WHERE id = ?")){ 
+                            ps.setInt(1, gradeChange);
+                            ps.setInt(2, checkId);
+                                 }
+                      }    
+                     
                      else{
                          System.out.println("Invalid Input...");
                      }
@@ -196,36 +146,38 @@ static int year = 2026;
                     }
                      break;
                     
+                 
                  case 4:
-                     System.out.print("New ID(1000000-1999999): ");
-                     try {
-                     String stringNewID = input.nextLine().trim();
-                     int newID = Integer.parseInt(stringNewID);
+                     try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("SELECT name, absences FROM students WHERE id = ?")){
+                        ps.setInt(1, checkId);
                      
-                     if (newID >= 1000000 && newID <= 1999999){
-                         school.get(index).id = newID;
-                     }
-                     else {
-                         System.out.println("Invalid Input...");
-                     }
-                     }catch (NumberFormatException e){
-                     System.out.println("Invalid Input. Try Again...");
-                     }
-                     break;
+                     try(ResultSet rs = ps.executeQuery()){
+                         
+                     while (rs.next()){
+                         int absenses = rs.getInt("absences");
+                         String theName = rs.getString("name");
                      
-                 case 5:
-                     System.out.println("Current Absenses: " + school.get(index).absences);
+                     System.out.println(theName + "'s Absenses: " + absenses);
                      System.out.print("New Number Of Absenses: ");
-                     try{
+                     }
+                     }
+                     }
+                     
+                     try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("UPDATE students SET absences = ? WHERE id = ?")){
+                     try{   
                      String stringNewAbsenses = input.nextLine().trim();
                      int newAbsenses = Integer.parseInt(stringNewAbsenses);
-                     school.get(index).absences = newAbsenses;
-                     }catch (NumberFormatException e){
+                     ps.setInt(1, newAbsenses);
+                     ps.setInt(2, checkId);
+                     
+                     }
+                     catch (NumberFormatException e){
                     System.out.println("Invalid Input. Try Again...");
-                    }
+                     }
+                     }
                      break;
                     
-                 case 6:
+                 case 5:
                     changeClassesLoop = true; 
                      while (changeClassesLoop){
                     System.out.println("Available Classes: ");
@@ -264,7 +216,7 @@ static int year = 2026;
                      }
                      break;
                  
-                 case 7:
+                 case 6:
                      changeStudentGrades = true;
                      while (changeStudentGrades){
                   System.out.println(school.get(index).name + " | " + school.get(index).email + " | ID: " + school.get(index).id + "\n"
@@ -302,19 +254,28 @@ static int year = 2026;
                  break;
                  
              }
+             
+                
             } catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
-       }
-      }
-     }
+       
     }
-    // adds student to system
-    public static void addStudentToSchool(){
-       students.school.add(addStudent());
-    }
+   
     
+            }      
+     }  catch (NumberFormatException e){
+         System.out.println("Invalid Input. Try Again...");
+             }
+}
+
+    
+    
+
     // view every students information from grade 
     public static void viewGrade(){
+        
+        
+        
     System.out.println("What Grade Would You Like To View?(9, 10, 11, or 12)");
     
     try {   
@@ -437,8 +398,12 @@ static int year = 2026;
       }   
      }
     }
+    
+    
+    
+    
     // any changes with classes that students can take
-    public static void addClasses(){
+    public static void addClasses() throws SQLException{
         // required for both loops
     addClassesLoop = true;
     mainClassLoop = true;
@@ -461,8 +426,16 @@ static int year = 2026;
         
         // prints classes
         case 1:
-        System.out.println("Current Classes: \n"
-            + Arrays.asList(students.classes));    
+            try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery("SELECT * FROM classes");
+                    int i = 1;
+                    while (rs.next()){
+                       
+                       String theClass = rs.getString("class");
+                       System.out.println(i + ". " + theClass);
+                       i++;                          
+             }
+            } 
             break;
             
             // loop - add class - press q - exit
@@ -475,40 +448,78 @@ static int year = 2026;
     // press q = quit
     if (className.equalsIgnoreCase("q") || className.equalsIgnoreCase("quit")){
         addClassesLoop = false;
-        System.out.println("");
     }
     else{
-     classes.add(className);
-    }
-   }
-         break;
+   try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("INSERT INTO classes (class) VALUES (?)")){
+       ps.setString(1, className);
+       ps.executeUpdate();
+       }
+      }
+     }
+    break;
          
         case 3: 
             // prints all classes with numbers
-            for (int i = 0; i < classes.size(); i++){
-            System.out.println((i + 1) + ". " + classes.get(i));
-            }
+            try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery("SELECT * FROM classes");
+                    int i = 1;
+                    while (rs.next()){
+                       
+                       String theClass = rs.getString("class");
+                       System.out.println(i + ". " + theClass);
+                       i++;                          
+             }
+            } 
+            
+            // change class
             System.out.println("Type The Number Of The Class Name You Want To Change");
             try{
             String stringClassChangeInput = input.nextLine().trim();
             int classChangeInput = Integer.parseInt(stringClassChangeInput);
             System.out.print("Type The Change: ");
             String classChangeAnswer = input.nextLine().trim();
-            classes.set((classChangeInput - 1), classChangeAnswer);
+            try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("UPDATE classes SET class = ? WHERE id = ?")){
+                
+               ps.setString(1, classChangeAnswer);
+               ps.setInt(2, classChangeInput);
+               ps.executeUpdate();
+            }
             }catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
             }
            break;
+           
+           
+           
+           
            // delete a class based on user choice
         case 4: 
-            for (int i = 0; i < classes.size(); i++){
-            System.out.println((i + 1) + ". " + classes.get(i));
-            }
+            try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery("SELECT * FROM classes");
+                    
+                    while (rs.next()){
+                      int pickId = rs.getInt("id"); 
+                       String theClass = rs.getString("class");
+                       System.out.println(pickId + ". " + theClass);                       
+             }
+            } 
+            
+            
            System.out.println("Type The Number Of The Class Name You Want To Delete");
            try{
            String stringClassDelete = input.nextLine().trim();
            int classDelete = Integer.parseInt(stringClassDelete);
-           classes.remove(classDelete - 1);
+           
+           try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM classes WHERE id = ?")){
+               ps.setInt(1, classDelete); 
+               ps.executeUpdate();
+               
+            
+               
+               
+                       }
+                   
+               
            }catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
             }
@@ -522,7 +533,8 @@ static int year = 2026;
         System.out.println("Invalid Input... Try Again.");
         break;
     }
-   } catch (NumberFormatException e){
+    } 
+    catch (NumberFormatException e){
             System.out.println("Invalid Input. Try Again...");
             }
   }
@@ -831,4 +843,5 @@ static int year = 2026;
        }    
       }
      }
-    }
+
+}
