@@ -14,9 +14,9 @@ static boolean IDmakerLoop = true;
        Database.startConnection();
 
        try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
-           
            stmt.execute("CREATE TABLE IF NOT EXISTS students ("
-                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                        + "student_Number INT,"
                         + "name VARCHAR(50),"
                         + "email VARCHAR(50),"
                         + "grade INT,"
@@ -24,16 +24,14 @@ static boolean IDmakerLoop = true;
                         + "overallGrade DOUBLE DEFAULT 0.0,"
                         + "honors VARCHAR(1),"
                         + "valedictorian VARCHAR(1))"); 
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes1 (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT, classOne VARCHAR(50), classTwo VARCHAR(50), classThree VARCHAR(50), classFour VARCHAR(50), classFive VARCHAR(50),"
+                   + " classSix VARCHAR(50), classSeven VARCHAR(50), FOREIGN KEY (student_Number) REFERENCES students(student_Number) ON DELETE CASCADE)");
            
+           stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT, gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
+                   + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0, FOREIGN KEY (student_Number) REFERENCES students(student_Number) ON DELETE CASCADE)");
            
-           
-           stmt.execute("CREATE TABLE IF NOT EXISTS classes1 (id INT AUTO_INCREMENT PRIMARY KEY, classOne VARCHAR(50), classTwo VARCHAR(50), classThree VARCHAR(50), classFour VARCHAR(50), classFive VARCHAR(50),"
-                   + " classSix VARCHAR(50), classSeven VARCHAR(50))");
-           
-           stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (id INT AUTO_INCREMENT PRIMARY KEY, gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
-                   + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0)");
-          
-           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, class VARCHAR(50))");
+        
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT UNIQUE AUTO_INCREMENT, class VARCHAR(50))");
            
            
            
