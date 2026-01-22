@@ -654,15 +654,15 @@ static int year = 2026;
      
      
        int deleteStudentInput = Integer.parseInt(stringDeleteStudentInput);
-       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM students WHERE id = ?")){
+       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM students WHERE student_Number = ?")){
            ps.setInt(1, deleteStudentInput);
            ps.executeUpdate();
       }
-       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM classes1 WHERE id = ?")){
+       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM classes1 WHERE student_Number = ?")){
            ps.setInt(1, deleteStudentInput);
            ps.executeUpdate();
        }
-       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM studentGrades WHERE id = ?")){
+       try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM studentGrades WHERE student_Number = ?")){
            ps.setInt(1, deleteStudentInput);
            ps.executeUpdate();
        }
@@ -945,7 +945,7 @@ static int year = 2026;
     
     
     // updates everything that needs to happen if it is the following year
-    public static void changeYear(){
+    public static void changeYear() throws SQLException{
         System.out.print("---WARNING---\n"
         + "- THIS WILL REMOVE ALL SENIORS FROM THE SCHOOL\n"
                 + "- FRESHMEN, SOFTMORES, AND JUNIORS MOVED UP A GRADE\n"
@@ -958,30 +958,47 @@ static int year = 2026;
         
         if (changeYearAnswer.equalsIgnoreCase("Yes") || changeYearAnswer.equalsIgnoreCase("Y")){
             // removes seniors & moves other students up a grade
-        for (int i = school.size() - 1; i >= 0; i--){
-            if (school.get(i).grade == 12){
-                school.remove(i);
-         }
-            else if (school.get(i).grade == 11){
-                school.get(i).grade = 12;
+            try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+                ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 12");
+                // delete all seniors 
+                while (rs.next()){
+                    int studentId = rs.getInt("student_Number");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM students WHERE student_Number = ?"); 
+            ps.setInt(1, studentId);
+            ps.executeUpdate();
+            
+            PreparedStatement is = conn.prepareStatement("DELETE FROM classes1 WHERE student_Number = ?");
+            is.setInt(1, studentId);
+            is.executeUpdate();
+            
+            PreparedStatement op = conn.prepareStatement("DELETE FROM studentGrades WHERE student_Number = ?");
+            op.setInt(1, studentId);
+            op.executeUpdate();
+                 
+             }
             }
-            else if (school.get(i).grade == 10){
-                school.get(i).grade = 11;
-            }
-            else if (school.get(i).grade == 9){
-                school.get(i).grade = 10;
-            }
-        }
-        // resets some information of students
-        for (int p = 0; p < school.size(); p++){
-            school.get(p).overallGrade = 0.0;
-            school.get(p).honors = 'N';
-            school.get(p).valedictorian = 'N';
-            school.get(p).absences = 0;
-            for (int g = 0; g < school.get(p).grades.length; g++){
-                school.get(p).grades[g] = 0.0; 
-                school.get(p).classes1[g] = null;
-         }
+            
+            try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+                ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 9 OR grade = 10 OR grade = 11");
+                // add 1 year onto students grades & reset their values 
+                while (rs.next()){
+               int studentId = rs.getInt("student_Number");
+               
+               PreparedStatement ps = conn.prepareStatement("UPDATE students SET grade = (grade + 1), overallGrade = 0.0, honors = 'N', valedictorian = 'N',"
+                       + " absences = 0 WHERE student_Number = ?");
+               ps.setInt(1, studentId);     
+               ps.executeUpdate();
+               // resets schedule
+               PreparedStatement os = conn.prepareStatement("UPDATE classes1 SET classOne = 'BLANK', classTwo = 'BLANK', classThree = 'BLANK',"
+                        + "classFour = 'BLANK', classFive = 'BLANK', classSix = 'BLANK', classSeven = 'BLANK' WHERE student_Number = ?");
+                        os.setInt(1, studentId);
+                        os.executeUpdate();
+                   // resets grades     
+                PreparedStatement us = conn.prepareStatement("UPDATE studentGrades SET gradeOne = 0.0, gradeTwo = 0.0, gradeThree = 0.0, gradeFour = 0.0, gradeFive = 0.0,"
+                        + "gradeSix = 0.0, gradeSeven = 0.0 WHERE student_Number = ?");
+                us.setInt(1, studentId);
+               us.executeUpdate();
+         }     
         }
        }
         else{
