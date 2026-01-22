@@ -546,6 +546,7 @@ static int year = 2026;
         int choiceStudent = Integer.parseInt(stringChoiceStudent);
         
        if (choiceStudent == 1){
+           studentUpdater();
            viewStudentLoop = true;
            while (viewStudentLoop){
                viewStudent();
@@ -560,11 +561,13 @@ static int year = 2026;
         }   
        }
        else if (choiceStudent == 2){
+           studentUpdater();
            students.afterChange = true;
            changeStudent();
        }
        // back to main menu
        else if (choiceStudent == 3){
+           studentUpdater();
            reports();
           viewStudentLoop = false; 
        }
@@ -641,6 +644,22 @@ static int year = 2026;
                      "             " + studentGradeTwo + "\n3. " + classThree + "             " + studentGradeThree + "\n4. "
                      + classFour + "             " + studentGradeFour + "\n5. " + classFive + "             " + studentGradeFive + "\n6. "
                      + classSix + "             " + studentGradeSix + "\n7. " + classSeven + "             " + studentGradeSeven);
+                     try (Connection conn = Database.continueConnection(); PreparedStatement gh = conn.prepareStatement("SELECT * FROM students WHERE student_Number = ?")){
+                         gh.setInt(1, viewStudentInput);
+                         ResultSet uy = gh.executeQuery();
+                         
+                         while (uy.next()){
+                             double gpa = uy.getDouble("overallGrade");
+                             int absences = uy.getInt("absences");
+                             String honors = uy.getString("honors");
+                             String valedictorian = uy.getString("valedictorian");
+                             
+                             System.out.println("GPA: " + gpa + " Absences: " + absences + " Honors: " + honors + " Valedictorian " + valedictorian);
+                             
+                             
+                         }
+                     }
+                     
                      
         } catch (NumberFormatException e){
                     System.out.println("Invalid Input. Try Again...");
@@ -813,123 +832,227 @@ static int year = 2026;
   }
     }
     // calculates each students GPA 
-    private static void calculateGPA(){
-        // the whole school
-        for (int i = 0; i < school.size(); i++){
-            // *IMPORTANT* overallGrade is reset every time so running the method doesnt divide the existing overallGrade  - gets wrong num
-            school.get(i).overallGrade = 0;
-            double isGPA0 = 0;
-            // makes sure GPA is not 0 because cant divide 0/0
-            for (int t = 0; t < school.get(i).grades.length; t++){
-               isGPA0 += school.get(i).grades[t];
-            }
-            // if 0 then 0
-            if (isGPA0 == 0.0){
-                school.get(i).overallGrade = 0.0;
-            }
-            // calculate gpa based on grades
-            else{
-            int classAmount = 0;
-            for (int p = 0; p < school.get(i).grades.length; p++){
-                if (school.get(i).grades[p] != 0.0 && school.get(i).classes1[p] != null){
-                    school.get(i).overallGrade += school.get(i).grades[p];
-                  classAmount++;                         
-               }
-            
-        }
-            school.get(i).overallGrade /= classAmount;
-       }   
-    }
-    }
-    // calculates if a student is in honors or not
-    private static void calculateHonors(){
+    private static void calculateGPA() throws SQLException{
         
-        for (int g = 0; g < school.size(); g++){
-            if (school.get(g).overallGrade >= 87.5){
-                school.get(g).honors = 'Y';
-            }
-            else if (school.get(g).overallGrade < 87.5){
-                school.get(g).honors = 'N';
-            }
+        try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+            
+            ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+            while (rs.next()){
+                double isGpa = 0;
+                int classCount = 0;
+             int studentId = rs.getInt("student_Number");
+             PreparedStatement ps = conn.prepareStatement("UPDATE students SET overallGrade = 0.0 WHERE student_Number = ?");
+             ps.setInt(1, studentId);
+             ps.executeUpdate();
+             
+             PreparedStatement is = conn.prepareStatement("SELECT * FROM studentGrades WHERE student_Number = ?");
+             is.setInt(1, studentId);
+             ResultSet sg = is.executeQuery();
+             while (sg.next()){
+             double one = sg.getDouble("gradeOne");
+             if (one != 0.0){
+                 isGpa += one;
+                 classCount++;
+             }
+             double two = sg.getDouble("gradeTwo");
+             if (two != 0.0){
+                 isGpa += two;
+                 classCount++;
+             }
+             double three = sg.getDouble("gradeThree");
+             if (three != 0.0){
+                 isGpa += three;
+                 classCount++;
+             }
+             double four = sg.getDouble("gradeFour");
+             if (four != 0.0){
+                 isGpa += four;
+                 classCount++;
+             }
+             double five = sg.getDouble("gradeFive");
+             if (five != 0.0){
+                 isGpa += five;
+                 classCount++;
+             }
+             double six = sg.getDouble("gradeSix");
+             if (six != 0.0){
+                 isGpa += six;
+                 classCount++;
+             }        
+             double seven = sg.getDouble("gradeSeven");
+             if (seven != 0.0){
+                 isGpa += seven;
+                 classCount++;
+             }
+             
+             double studentGPA = 0.0;
+             if (isGpa != 0.0){
+             studentGPA = isGpa/classCount;
+             }
+             else{
+                 studentGPA = 0.0;
+                 }
+             if (studentGPA != 0.0){
+             PreparedStatement in = conn.prepareStatement("UPDATE students SET overallGrade = ? WHERE student_Number = ?");
+             in.setDouble(1, studentGPA);
+             in.setInt(2, studentId);
+             in.executeUpdate();
+             }
+             else if (studentGPA == 0.0) {
+             PreparedStatement we = conn.prepareStatement("UPDATE students SET overallGrade = ? WHERE student_Number = ?");
+             we.setDouble(1, 0.0);
+             we.setInt(2, studentId);
+             we.executeUpdate();
+             }
+          }   
+         }
         }
+
+      
     }
     
-    
+    // calculates if a student is in honors or not
+    private static void calculateHonors() throws SQLException{
+     try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+         ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+         while (rs.next()){
+            int studentId = rs.getInt("student_Number");
+            double overallGrade = rs.getDouble("overallGrade");
+            
+            if (overallGrade >= 87.5){
+              PreparedStatement gh = conn.prepareStatement("UPDATE students SET honors = 'Y' WHERE student_Number = ?");
+               gh.setInt(1, studentId);       
+            }
+            else if (overallGrade < 87.5){
+              PreparedStatement gj = conn.prepareStatement("UPDATE students SET honors = 'N' WHERE student_Number = ?");  
+              gj.setInt(1, studentId);
+            }
+         }   
+     }
+     }
+        
     // finds the validictorian from each grade
-    private static void calculateValidictorian(){
-        double highestFreshmenGrade = 0.0;
+    private static void calculateValidictorian() throws SQLException{
+      double highestFreshmenGrade = 0.0;
        double highestSoftmoreGrade = 0.0;
        double highestJuniorGrade = 0.0;
        double highestSeniorGrade = 0.0;
-       // calculates the highest GPA from each grade
-        for (int w = 0; w < school.size(); w++){
-            // 9th grade
-            if (school.get(w).grade == 9){
-               if (school.get(w).overallGrade > highestFreshmenGrade){
-                   highestFreshmenGrade = school.get(w).overallGrade;
-             }
+       
+       // calculates the highest GPA from freshmen
+        try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 9");
+            while (rs.next()){
+                double studentGPANine = rs.getDouble("overallGrade");
+                if (studentGPANine > highestFreshmenGrade){
+                    highestFreshmenGrade = studentGPANine;
+                }
             }
-            // 10th grade
-            if (school.get(w).grade == 10){
-                if (school.get(w).overallGrade > highestSoftmoreGrade){
-                highestSoftmoreGrade = school.get(w).overallGrade;
+            // if GPA is equal to highest freshmen GPA -> valedictorian  
+            while (rs.next()){
+                double overallGradeNine = rs.getDouble("overallGrade");
+                int studentId = rs.getInt("student_Number");
+                if (overallGradeNine == highestFreshmenGrade){
+                 PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
+                 ml.setInt(1, studentId);
+                 ml.executeUpdate();
+                }
+                else if (overallGradeNine != highestFreshmenGrade){
+                    PreparedStatement mk = conn.prepareStatement("UPDATE students SET valedictorian = 'N' WHERE student_Number = ?");
+                    mk.setInt(1, studentId);
+                    mk.executeUpdate();
+                }
             }
-           }
-            // 11th grade
-            if (school.get(w).grade == 11){
-                if (school.get(w).overallGrade > highestJuniorGrade){
-                    highestJuniorGrade = school.get(w).overallGrade;
-             }
-            }
-            // 12th grade
-            if (school.get(w).grade == 12){
-                if (school.get(w).overallGrade > highestSeniorGrade){
-                    highestSeniorGrade = school.get(w).overallGrade;
-          }
-         }
+                
+            
+           
+            
+            // calculates the highest GPA from softmores
+            ResultSet ts = stmt.executeQuery("SELECT * FROM students WHERE grade = 10");
+            while (ts.next()){
+                double studentGPATen = ts.getDouble("overallGrade");
+                if (studentGPATen > highestSoftmoreGrade){
+                 highestSoftmoreGrade = studentGPATen;   
+                }
         }
-        
-        
-        
-        
-        // if GPA is equal to highest in grade -> valedictorian 
-        for (int y = 0; y < school.size(); y++){
-            // 9th grade
-            if (school.get(y).grade == 9){
-                if (school.get(y).overallGrade == highestFreshmenGrade){
-                    school.get(y).valedictorian = 'Y';
+           
+            while (ts.next()){
+                double overallGradeTen = ts.getDouble("overallGrade");
+                int studentId = rs.getInt("student_Number");
+                if (overallGradeTen == highestSoftmoreGrade){
+                    PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
+                  ml.setInt(1, studentId);
+                 ml.executeUpdate();  
                 }
-                else {
-                  school.get(y).valedictorian = 'N';  
+                else if (overallGradeTen != highestSoftmoreGrade){
+                    PreparedStatement mk = conn.prepareStatement("UPDATE students SET valedictorian = 'N' WHERE student_Number = ?");
+                    mk.setInt(1, studentId);
+                    mk.executeUpdate();
+                }
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            // calculates the highest GPA from Juniors
+          ResultSet ys = stmt.executeQuery("SELECT * FROM students WHERE grade = 11");
+          while (ys.next()){
+              double studentGPAEleven = ys.getDouble("overallGrade");
+              if (studentGPAEleven > highestJuniorGrade){
+                  highestJuniorGrade = studentGPAEleven;
+              }
+          }
+          while (ys.next()){
+                double overallGradeEleven = ts.getDouble("overallGrade");
+                int studentId = rs.getInt("student_Number");
+                if (overallGradeEleven == highestJuniorGrade){
+                    PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
+                  ml.setInt(1, studentId);
+                  ml.executeUpdate();  
+                }
+                else if (overallGradeEleven != highestJuniorGrade){
+                    PreparedStatement mk = conn.prepareStatement("UPDATE students SET valedictorian = 'N' WHERE student_Number = ?");
+                    mk.setInt(1, studentId);
+                    mk.executeUpdate();
+                }
+            }
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          ResultSet us = stmt.executeQuery("SELECT * FROM students WHERE grade = 12");
+          while (us.next()){
+              double studentGPATwelve = us.getDouble("overallGrade");
+              if (studentGPATwelve > highestSeniorGrade){
+                  highestSeniorGrade = studentGPATwelve;
+              }
+          }
+       while (us.next()){
+                double overallGradeTwelve = ts.getDouble("overallGrade");
+                int studentId = rs.getInt("student_Number");
+                if (overallGradeTwelve == highestSeniorGrade){
+                    PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
+                  ml.setInt(1, studentId);
+                  ml.executeUpdate();  
+                }
+                else if (overallGradeTwelve != highestSeniorGrade){
+                    PreparedStatement mk = conn.prepareStatement("UPDATE students SET valedictorian = 'N' WHERE student_Number = ?");
+                    mk.setInt(1, studentId);
+                    mk.executeUpdate();
              }
             }
-            // 10th grade
-            if (school.get(y).grade == 10){
-                if (school.get(y).overallGrade == highestSoftmoreGrade){
-                    school.get(y).valedictorian = 'Y';
-                }
-                else{
-                    school.get(y).valedictorian = 'N';
-             }
-            }
-            // 11th grade
-            if (school.get(y).grade == 11){
-                if (school.get(y).overallGrade == highestJuniorGrade){
-                    school.get(y).valedictorian = 'Y';
-                }
-                else{
-                    school.get(y).valedictorian = 'N';
-             }
-            }
-            // 12th grade
-            if (school.get(y).grade == 12){
-                if (school.get(y).overallGrade == highestSeniorGrade){
-                    school.get(y).valedictorian = 'Y';
-                }
-                else {
-                    school.get(y).valedictorian = 'N';
-             }
-            }  
            }
           }
     
@@ -937,7 +1060,7 @@ static int year = 2026;
     
     
     // constantly updates students information based on user changes 
-    public static void studentUpdater(){
+    public static void studentUpdater() throws SQLException{
         calculateGPA();
         calculateHonors();
         calculateValidictorian();
