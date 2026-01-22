@@ -29,9 +29,8 @@ static boolean IDmakerLoop = true;
            
            stmt.execute("CREATE TABLE IF NOT EXISTS studentGrades (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT, gradeOne DOUBLE DEFAULT 0.0, gradeTwo DOUBLE DEFAULT 0.0, gradeThree DOUBLE DEFAULT 0.0, gradeFour DOUBLE DEFAULT 0.0,"
                    + "gradeFive DOUBLE DEFAULT 0.0, gradeSix DOUBLE DEFAULT 0.0, gradeSeven DOUBLE DEFAULT 0.0, FOREIGN KEY (student_Number) REFERENCES students(student_Number) ON DELETE CASCADE)");
-           
-        
-           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT UNIQUE AUTO_INCREMENT, class VARCHAR(50))");
+      
+           stmt.execute("CREATE TABLE IF NOT EXISTS classes (id INT AUTO_INCREMENT PRIMARY KEY, student_Number INT, class VARCHAR(50))");
            
            
            

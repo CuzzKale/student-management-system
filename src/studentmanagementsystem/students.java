@@ -45,6 +45,7 @@ static int year = 2026;
    
       try{
         try{ 
+            
    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO students (student_Number, name, grade, overallGrade, email, absences, honors, valedictorian) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")){
      
   
@@ -743,8 +744,17 @@ static int year = 2026;
         addClassesLoop = false;
     }
     else{
-   try (Connection conn = Database.continueConnection(); PreparedStatement ps = conn.prepareStatement("INSERT INTO classes (class) VALUES (?)")){
-       ps.setString(1, className);
+          try (Connection conn = Database.continueConnection()){
+                      PreparedStatement psNext = conn.prepareStatement(
+    "SELECT COALESCE(MAX(student_Number), 0) + 1 AS nextNumber FROM classes"
+        );
+        ResultSet rsNext = psNext.executeQuery();
+        rsNext.next();
+        int studentNumber = rsNext.getInt("nextNumber");
+          
+   PreparedStatement ps = conn.prepareStatement("INSERT INTO classes (student_Number, class) VALUES (?, ?)");
+       ps.setInt(1, studentNumber);
+       ps.setString(2, className);
        ps.executeUpdate();
        }
       }
