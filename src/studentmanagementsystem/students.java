@@ -914,18 +914,20 @@ static int year = 2026;
     // calculates if a student is in honors or not
     private static void calculateHonors() throws SQLException{
      try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()){
-         ResultSet rs = stmt.executeQuery("SELECT * FROM students");
-         while (rs.next()){
-            int studentId = rs.getInt("student_Number");
-            double overallGrade = rs.getDouble("overallGrade");
+         ResultSet rq = stmt.executeQuery("SELECT * FROM students");
+         while (rq.next()){
+            int studentId = rq.getInt("student_Number");
+            double overallGrade = rq.getDouble("overallGrade");
             
             if (overallGrade >= 87.5){
               PreparedStatement gh = conn.prepareStatement("UPDATE students SET honors = 'Y' WHERE student_Number = ?");
-               gh.setInt(1, studentId);       
+               gh.setInt(1, studentId);
+               gh.executeUpdate();
             }
             else if (overallGrade < 87.5){
               PreparedStatement gj = conn.prepareStatement("UPDATE students SET honors = 'N' WHERE student_Number = ?");  
               gj.setInt(1, studentId);
+              gj.executeUpdate();
             }
          }   
      }
@@ -948,9 +950,10 @@ static int year = 2026;
                 }
             }
             // if GPA is equal to highest freshmen GPA -> valedictorian  
-            while (rs.next()){
-                double overallGradeNine = rs.getDouble("overallGrade");
-                int studentId = rs.getInt("student_Number");
+            ResultSet bn = stmt.executeQuery("SELECT * FROM students WHERE grade = 9");
+            while (bn.next()){
+                double overallGradeNine = bn.getDouble("overallGrade");
+                int studentId = bn.getInt("student_Number");
                 if (overallGradeNine == highestFreshmenGrade){
                  PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
                  ml.setInt(1, studentId);
@@ -974,10 +977,10 @@ static int year = 2026;
                  highestSoftmoreGrade = studentGPATen;   
                 }
         }
-           
-            while (ts.next()){
-                double overallGradeTen = ts.getDouble("overallGrade");
-                int studentId = rs.getInt("student_Number");
+           ResultSet tr = stmt.executeQuery("SELECT * FROM students WHERE grade = 10");
+            while (tr.next()){
+                double overallGradeTen = tr.getDouble("overallGrade");
+                int studentId = tr.getInt("student_Number");
                 if (overallGradeTen == highestSoftmoreGrade){
                     PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
                   ml.setInt(1, studentId);
@@ -1005,9 +1008,11 @@ static int year = 2026;
                   highestJuniorGrade = studentGPAEleven;
               }
           }
-          while (ys.next()){
-                double overallGradeEleven = ts.getDouble("overallGrade");
-                int studentId = rs.getInt("student_Number");
+          
+          ResultSet yg = stmt.executeQuery("SELECT * FROM students WHERE grade = 11");
+          while (yg.next()){
+                double overallGradeEleven = yg.getDouble("overallGrade");
+                int studentId = yg.getInt("student_Number");
                 if (overallGradeEleven == highestJuniorGrade){
                     PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
                   ml.setInt(1, studentId);
@@ -1039,9 +1044,10 @@ static int year = 2026;
                   highestSeniorGrade = studentGPATwelve;
               }
           }
-       while (us.next()){
-                double overallGradeTwelve = ts.getDouble("overallGrade");
-                int studentId = rs.getInt("student_Number");
+          ResultSet ua = stmt.executeQuery("SELECT * FROM students WHERE grade = 12");
+       while (ua.next()){
+                double overallGradeTwelve = ua.getDouble("overallGrade");
+                int studentId = ua.getInt("student_Number");
                 if (overallGradeTwelve == highestSeniorGrade){
                     PreparedStatement ml = conn.prepareStatement("UPDATE students SET valedictorian = 'Y' WHERE student_Number = ?");
                   ml.setInt(1, studentId);
@@ -1130,7 +1136,7 @@ static int year = 2026;
       }
     
     // displays a summary of a group of students - valedictorians, honors, average gpa, and total students
-    public static void reports(){
+    public static void reports() throws SQLException{
         reportsLoop = true;
         while (reportsLoop){
             
@@ -1149,104 +1155,235 @@ static int year = 2026;
            switch (reportAnswer){
                // whole school 
                case 1:
-                   int totalStudents = 0;
+                   int totalStudentsWithGrades = 0;
                    int averageGPA = 0;
-                   for (int i = 0; i < school.size(); i++){
-                       totalStudents++;
-                       averageGPA += school.get(i).overallGrade;
-                       if (school.get(i).valedictorian == 'Y'){
-                    System.out.println("Grade " + school.get(i).grade + " Valedictorian: " + school.get(i).name + "(GPA: " + school.get(i).overallGrade + ")");
-                       }
+                   int totalStudents = 0;
+                  try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()) {
+                      
+                      // get the valedictorians of every grade, total students, and average gpa
+                      ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+                      System.out.println("Valedictorians: ");
+                      while (rs.next()){
+                      String valedictorian = rs.getString("valedictorian");
+                      String name = rs.getString("name");
+                      double GPA = rs.getDouble("overallGrade");
+                      int grade = rs.getInt("grade");
+                      
+                      if (valedictorian.equals("Y")){
+                      System.out.println("Grade: " + grade + " Valedictorian: " + name + "(GPA: " + GPA + ")")    ;
+                      }
+                          if (GPA != 0.0){
+                        averageGPA += GPA; 
+                        totalStudentsWithGrades++;
+                          }
+                       totalStudents++;   
                    }
-                   System.out.println("Honors Students: ");
-                   for (int p = 0; p < school.size(); p++){
-                       if (school.get(p).honors == 'Y'){
-                           System.out.println(school.get(p).name + "(GPA: " + school.get(p).overallGrade + ")");
-                       }
-                   }
-                System.out.println("Total Students: " + totalStudents);
-                System.out.println("Average GPA: " + (averageGPA / school.size()));
+                      System.out.println("Honors Students: ");
+                      ResultSet qq = stmt.executeQuery("SELECT * FROM students");
+                      while (qq.next()){
+                      String honors = qq.getString("honors");
+                      String name = qq.getString("name");
+                      double GPA = qq.getDouble("overallGrade");
+                      int grade = qq.getInt("grade");
+                      if (honors.equals("Y")){
+                      System.out.println(name + "(GPA: " + GPA + ")");
+                      }
+                  }  
+                      System.out.println("Total Students: " + totalStudents);
+                      if (averageGPA != 0.0 && totalStudentsWithGrades != 0){
+                System.out.println("Average GPA(Of Students That Have Grades): " + (averageGPA / totalStudentsWithGrades));
+                  }
+                 }
+                  
                    break;
+                   
+                   
+                   
+                   
                    // freshmen
                case 2:
                    System.out.println("Freshmen Report: ");
                    int freshmenStudents = 0;
                    int averageFreshmenGPA = 0;
-                   for (int t = 0; t < school.size(); t++){
-                       if (school.get(t).grade == 9){
-                       freshmenStudents++;
-                       averageFreshmenGPA += school.get(t).overallGrade;
-                       if (school.get(t).valedictorian == 'Y'){
-                           System.out.println("Valedictorian: " + school.get(t).name + "(GPA: " + school.get(t).overallGrade + ")");
-                       }
-                       if (school.get(t).honors == 'Y'){
-                           System.out.println("Honor Student: " + school.get(t).name + "(GPA: " + school.get(t).overallGrade + ")");
-                       }
-                        }
-                         }
+                   int freshmenStudentsWithGrades = 0; 
+                   
+                   try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()) {
+                      
+                      // get the valedictorians of every grade, total students, and average gpa
+                      ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 9");
+                      System.out.println("Valedictorian: ");
+                      while (rs.next()){
+                      String valedictorian = rs.getString("valedictorian");
+                      String name = rs.getString("name");
+                      double GPA = rs.getDouble("overallGrade");
+                      int grade = rs.getInt("grade");
+                      
+                      if (valedictorian.equals("Y")){
+                      System.out.println("Grade: " + grade + " Valedictorian: " + name + "(GPA: " + GPA + ")")    ;
+                      }
+                          if (GPA != 0.0){
+                        averageFreshmenGPA += GPA; 
+                        freshmenStudentsWithGrades++;
+                          }
+                         freshmenStudents++;   
+                   }
+                      System.out.println("Honors Students: ");
+                      ResultSet ww = stmt.executeQuery("SELECT * FROM students WHERE grade = 9");
+                      while (ww.next()){
+                      String honors = ww.getString("honors");
+                      String name = ww.getString("name");
+                      double GPA = ww.getDouble("overallGrade");
+                      int grade = ww.getInt("grade");
+                      if (honors.equals("Y")){
+                      System.out.println(name + "(GPA: " + GPA + ")");
+                      }
+                  }  
+              
                    System.out.println("Freshmen Students: " + freshmenStudents);
-                   System.out.println("Freshmen Average GPA: " + (averageFreshmenGPA/freshmenStudents));
+                   if (averageFreshmenGPA != 0.0 && freshmenStudentsWithGrades != 0){
+                   System.out.println("Freshmen Average GPA(Of Students That Have Grades): " + (averageFreshmenGPA/freshmenStudentsWithGrades));
+                   }
+                  }
                    break;
+                   
+                   
+                   
                    // softmores
                case 3:
                    System.out.println("Softmore Report: ");
                    int softmoreStudents = 0;
                    int averageSoftmoreGPA = 0;
-                   for (int u = 0; u < school.size(); u++){
-                       if (school.get(u).grade == 10){
-                       softmoreStudents++;
-                       averageSoftmoreGPA += school.get(u).overallGrade;
-                       if (school.get(u).valedictorian == 'Y'){
-                           System.out.println("Valedictorian: " + school.get(u).name + "(GPA: " + school.get(u).overallGrade + ")");
-                       }
-                       if (school.get(u).honors == 'Y'){
-                           System.out.println("Honor Student: " + school.get(u).name + "(GPA: " + school.get(u).overallGrade + ")");
-                       }
-                        }
-                         }
+                   int softmoreStudentsWithGrades = 0;
+                         try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()) {
+                      
+                      // get the valedictorians of every grade, total students, and average gpa
+                      ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 10");
+                      System.out.println("Valedictorian: ");
+                      while (rs.next()){
+                      String valedictorian = rs.getString("valedictorian");
+                      String name = rs.getString("name");
+                      double GPA = rs.getDouble("overallGrade");
+                      int grade = rs.getInt("grade");
+                      
+                      if (valedictorian.equals("Y")){
+                      System.out.println("Grade: " + grade + " Valedictorian: " + name + "(GPA: " + GPA + ")")    ;
+                      }
+                          if (GPA != 0.0){
+                        averageSoftmoreGPA += GPA; 
+                        softmoreStudentsWithGrades++;
+                          }
+                         softmoreStudents++;   
+                   }
+                      System.out.println("Honors Students: ");
+                      ResultSet ee = stmt.executeQuery("SELECT * FROM students WHERE grade = 10");
+                      while (ee.next()){
+                      String honors = ee.getString("honors");
+                      String name = ee.getString("name");
+                      double GPA = ee.getDouble("overallGrade");
+                      int grade = ee.getInt("grade");
+                      if (honors.equals("Y")){
+                      System.out.println(name + "(GPA: " + GPA + ")");
+                      }
+                  }  
+              
                    System.out.println("Softmore Students: " + softmoreStudents);
-                   System.out.println("Softmores Average GPA: " + (averageSoftmoreGPA/softmoreStudents));
+                   if (averageSoftmoreGPA != 0.0 && softmoreStudentsWithGrades != 0){
+                   System.out.println("Softmores Average GPA(Of Students That Have Grades): " + (averageSoftmoreGPA/softmoreStudentsWithGrades));
+                         }
+                         }
                    break;
+                   
                    // juniors
                case 4:
                    System.out.println("Juniors Report: ");
                    int juniorStudents = 0;
                    int averageJuniorGPA = 0;
-                   for (int j = 0; j < school.size(); j++){
-                       if (school.get(j).grade == 11){
-                       juniorStudents++;
-                       averageJuniorGPA += school.get(j).overallGrade;
-                       if (school.get(j).valedictorian == 'Y'){
-                           System.out.println("Valedictorian: " + school.get(j).name + "(GPA: " + school.get(j).overallGrade + ")");
-                       }
-                       if (school.get(j).honors == 'Y'){
-                           System.out.println("Honor Student: " + school.get(j).name + "(GPA: " + school.get(j).overallGrade + ")");
-                       }
-                        }
-                         }
+                   int juniorStudentsWithGrades = 0; 
+                      try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()) {
+                      
+                      // get the valedictorians of every grade, total students, and average gpa
+                      ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 11");
+                      System.out.println("Valedictorian: ");
+                      while (rs.next()){
+                      String valedictorian = rs.getString("valedictorian");
+                      String name = rs.getString("name");
+                      double GPA = rs.getDouble("overallGrade");
+                      int grade = rs.getInt("grade");
+                      
+                      if (valedictorian.equals("Y")){
+                      System.out.println("Grade: " + grade + " Valedictorian: " + name + "(GPA: " + GPA + ")")    ;
+                      }
+                          if (GPA != 0.0){
+                        averageJuniorGPA += GPA; 
+                        juniorStudentsWithGrades++;
+                          }
+                         juniorStudents++;   
+                   }
+                      System.out.println("Honors Students: ");
+                      ResultSet rr = stmt.executeQuery("SELECT * FROM students WHERE grade = 11");
+                      while (rr.next()){
+                      String honors = rr.getString("honors");
+                      String name = rr.getString("name");
+                      double GPA = rr.getDouble("overallGrade");
+                      int grade = rr.getInt("grade");
+                      if (honors.equals("Y")){
+                      System.out.println(name + "(GPA: " + GPA + ")");
+                      }
+                  }  
+              
                    System.out.println("Junior Students: " + juniorStudents);
-                   System.out.println("Juniors Average GPA: " + (averageJuniorGPA/juniorStudents));
+                   if (averageJuniorGPA != 0.0 && juniorStudentsWithGrades != 0){
+                   System.out.println("Juniors Average GPA(Of Students That Have Grades): " + (averageJuniorGPA/juniorStudentsWithGrades));
+                      }
+                         }
                    break;
+                   
+                   
                    // seniors
                case 5:
                    System.out.println("Seniors Report: ");
                    int seniorStudents = 0;
                    int averageSeniorGPA = 0;
-                   for (int s = 0; s < school.size(); s++){
-                       if (school.get(s).grade == 12){
-                       seniorStudents++;
-                       averageSeniorGPA += school.get(s).overallGrade;
-                       if (school.get(s).valedictorian == 'Y'){
-                           System.out.println("Valedictorian: " + school.get(s).name + "(GPA: " + school.get(s).overallGrade + ")");
-                       }
-                       if (school.get(s).honors == 'Y'){
-                           System.out.println("Honor Student: " + school.get(s).name + "(GPA: " + school.get(s).overallGrade + ")");
-                       }
-                        }
-                         }
+                   int seniorStudentsWithGrades = 0;
+                    try (Connection conn = Database.continueConnection(); Statement stmt = conn.createStatement()) {
+                      
+                      // get the valedictorians of every grade, total students, and average gpa
+                      ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE grade = 12");
+                      System.out.println("Valedictorian: ");
+                      while (rs.next()){
+                      String valedictorian = rs.getString("valedictorian");
+                      String name = rs.getString("name");
+                      double GPA = rs.getDouble("overallGrade");
+                      int grade = rs.getInt("grade");
+                      
+                      if (valedictorian.equals("Y")){
+                      System.out.println("Grade: " + grade + " Valedictorian: " + name + "(GPA: " + GPA + ")")    ;
+                      }
+                          if (GPA != 0.0){
+                        averageSeniorGPA += GPA; 
+                        seniorStudentsWithGrades++;
+                          }
+                         seniorStudents++;   
+                   }
+                      System.out.println("Honors Students: ");
+                      ResultSet tt = stmt.executeQuery("SELECT * FROM students WHERE grade = 12");
+                      while (tt.next()){
+                      String honors = tt.getString("honors");
+                      String name = tt.getString("name");
+                      double GPA = tt.getDouble("overallGrade");
+                      int grade = tt.getInt("grade");
+                      if (honors.equals("Y")){
+                      System.out.println(name + "(GPA: " + GPA + ")");
+                      }
+                  }  
+                      
                    System.out.println("Senior Students: " + seniorStudents);
-                   System.out.println("Seniors Average GPA: " + (averageSeniorGPA/seniorStudents));
+                   if (averageSeniorGPA != 0.0 && seniorStudentsWithGrades != 0){
+                   System.out.println("Seniors Average GPA(Of Students That Have Grades): " + (averageSeniorGPA/seniorStudentsWithGrades));
+                    }
+                    }
                    break;
+                   
                case 6:
                    reportsLoop = false; 
                    break;
